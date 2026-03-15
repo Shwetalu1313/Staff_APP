@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATOM | Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="settings">
+  <header class="topbar" id="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="ATOM home">
+        <img class="brand-logo" src="assets/logo.png" alt="ATOM" />
+      </a>
+      <div class="nav-actions">
+        <nav class="nav-links" aria-label="Main">
+          <a data-link="home" href="index.html">Home</a>
+          <a data-link="workspace" href="workspace.html">Workspace</a>
+          <a data-link="services" href="services.html">Services</a>
+          <a data-link="support" href="support.html">Support</a>
+        </nav>
+        <div class="nav-right" aria-label="Account">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17H9m9-1v-4a6 6 0 1 0-12 0v4l-2 2h16l-2-2z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+            <span class="icon-badge" aria-hidden="true"></span>
+          </button>
+          <button class="profile-chip" type="button" aria-label="Profile">
+            <span class="profile-avatar">AM</span>
+            <span class="profile-name">Aye Min</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner hero-grid" data-reveal>
+        <div>
+          <p class="eyebrow">Preferences</p>
+          <h1>Control your workspace appearance.</h1>
+          <p class="lead">Choose how the portal looks, keep it aligned with your device, and review the site-level preferences in one place.</p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="workspace.html">Open Workspace</a>
+            <a class="btn btn-ghost" href="version.html">View Versions</a>
+          </div>
+        </div>
+        <div class="hero-visual" data-reveal>
+          <img src="assets/hero-workspace.svg" alt="Settings and preferences illustration" />
+          <span class="float-chip top">3 Modes</span>
+          <span class="float-chip bottom">Preferences</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-priority" data-reveal>
+      <div class="container">
+        <h2>Theme Mode</h2>
+        <p class="section-note">Pick a permanent theme or let the site follow your operating system automatically.</p>
+        <div class="settings-layout">
+          <div class="settings-stack">
+            <article class="panel">
+              <h3>Choose your appearance</h3>
+              <div class="theme-options" role="group" aria-label="Theme mode">
+                <button class="theme-option" type="button" data-theme-option="light" aria-pressed="false">
+                  <span class="theme-swatch light" aria-hidden="true"></span>
+                  <strong>Light</strong>
+                  <span>Bright interface with the richer color texture.</span>
+                </button>
+                <button class="theme-option" type="button" data-theme-option="dark" aria-pressed="false">
+                  <span class="theme-swatch dark" aria-hidden="true"></span>
+                  <strong>Dark</strong>
+                  <span>Low-glare interface for darker environments.</span>
+                </button>
+                <button class="theme-option" type="button" data-theme-option="system" aria-pressed="false">
+                  <span class="theme-swatch system" aria-hidden="true"></span>
+                  <strong>System</strong>
+                  <span>Automatically match your device appearance setting.</span>
+                </button>
+              </div>
+              <p class="settings-status" data-theme-status></p>
+            </article>
+            <article class="panel">
+              <h3>Preference notes</h3>
+              <ul class="settings-list">
+                <li>The theme preference is stored in your browser for this site only.</li>
+                <li>System mode updates automatically when your device changes between light and dark.</li>
+                <li>The top-right theme button still works as a quick override for light or dark mode.</li>
+              </ul>
+            </article>
+            <article class="panel">
+              <h3>Notification preferences</h3>
+              <p class="section-note">Choose which site notifications stay enabled in this browser.</p>
+              <div class="pref-grid">
+                <div class="pref-row">
+                  <div class="pref-meta">
+                    <strong>Browser alerts</strong>
+                    <span>Instant notices for approvals and tickets</span>
+                  </div>
+                  <button class="switch-toggle on" type="button" role="switch" aria-checked="true" aria-label="Browser alerts enabled" data-setting-switch="browserAlerts">
+                    <span class="switch-toggle-track" aria-hidden="true">
+                      <span class="switch-toggle-thumb"></span>
+                    </span>
+                    <span class="switch-toggle-label">On</span>
+                  </button>
+                </div>
+                <div class="pref-row">
+                  <div class="pref-meta">
+                    <strong>Email digest</strong>
+                    <span>Daily summary of changes and queue status</span>
+                  </div>
+                  <button class="switch-toggle off" type="button" role="switch" aria-checked="false" aria-label="Email digest disabled" data-setting-switch="emailDigest">
+                    <span class="switch-toggle-track" aria-hidden="true">
+                      <span class="switch-toggle-thumb"></span>
+                    </span>
+                    <span class="switch-toggle-label">Off</span>
+                  </button>
+                </div>
+                <div class="pref-row">
+                  <div class="pref-meta">
+                    <strong>Product updates</strong>
+                    <span>Release notes, improvements, and policy reminders</span>
+                  </div>
+                  <button class="switch-toggle on" type="button" role="switch" aria-checked="true" aria-label="Product updates enabled" data-setting-switch="productUpdates">
+                    <span class="switch-toggle-track" aria-hidden="true">
+                      <span class="switch-toggle-thumb"></span>
+                    </span>
+                    <span class="switch-toggle-label">On</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <aside class="settings-stack">
+            <article class="panel">
+              <h3>Current selection</h3>
+              <p class="section-note">Live summary of your active appearance mode.</p>
+              <span class="setting-highlight" data-theme-current>System</span>
+            </article>
+            <article class="panel">
+              <h3>Permissions preview</h3>
+              <p class="section-note">Display-only status for future browser and device permissions.</p>
+              <div class="pref-grid">
+                <div class="permission-item">
+                  <div class="pref-meta">
+                    <strong>Notifications</strong>
+                    <span>Permission shown as ready</span>
+                  </div>
+                  <span class="mock-switch on">Allowed</span>
+                </div>
+                <div class="permission-item">
+                  <div class="pref-meta">
+                    <strong>Clipboard</strong>
+                    <span>Quick copy and paste actions</span>
+                  </div>
+                  <span class="mock-switch off">Ask</span>
+                </div>
+                <div class="permission-item">
+                  <div class="pref-meta">
+                    <strong>Location</strong>
+                    <span>Weather and local office context</span>
+                  </div>
+                  <span class="mock-switch off">Blocked</span>
+                </div>
+              </div>
+            </article>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>ATOM Workspace</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="faq.html">FAQ</a>
+        <a href="version.html">Version</a>
+        <a href="legal.html">Legal</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

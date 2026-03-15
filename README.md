@@ -17,3 +17,4 @@ Included pages:
 - Version
 - Legal
 - Privacy
+- Settings
