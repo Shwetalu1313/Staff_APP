@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATOM | Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="technical">
+  <header class="topbar" id="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="ATOM home">
+        <img class="brand-logo" src="assets/logo.png" alt="ATOM" />
+      </a>
+      <div class="nav-actions">
+        <nav class="nav-links" aria-label="Main">
+          <a data-link="home" href="index.html">Home</a>
+          <a data-link="workspace" href="workspace.html">Workspace</a>
+          <a data-link="services" href="services.html">Services</a>
+        </nav>
+        <div class="nav-right" aria-label="Account">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17H9m9-1v-4a6 6 0 1 0-12 0v4l-2 2h16l-2-2z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+            <span class="icon-badge" aria-hidden="true"></span>
+          </button>
+          <button class="profile-chip" type="button" aria-label="Profile">
+            <span class="profile-avatar">AM</span>
+            <span class="profile-name">Aye Min</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="docs-page">
+    <section class="section section-standard docs-section-wrap">
+      <div class="container docs-shell">
+        <aside class="docs-sidebar panel">
+          <p class="eyebrow">Documentation</p>
+          <h1>Technical Reference</h1>
+          <p class="section-note">Detailed implementation notes for the current staff portal, plus the backend work needed if this site becomes dynamic.</p>
+          <label class="docs-search" for="doc-search">
+            <span>Search topics</span>
+            <input id="doc-search" type="search" placeholder="Search pages, weather, backend, palette..." data-doc-search />
+          </label>
+          <nav class="docs-topic-list" aria-label="Documentation topics">
+            <button type="button" class="docs-topic active" data-doc-topic="doc-overview">Overview</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-pages">Page Map</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-navigation">Navigation</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-features">Interactive Features</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-storage">Storage and Data</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-backend">Backend Migration</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-design">Design System</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-palette">Color Palette</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-quality">Quality and Risks</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-shortcuts">Shortcuts</button>
+          </nav>
+          <div class="docs-side-note">
+            <strong>Current scope</strong>
+            <p>Static multi-page frontend, browser-side state, client-side weather, and demo-only anonymous room behavior.</p>
+          </div>
+        </aside>
+
+        <div class="docs-content">
+          <section id="doc-overview" class="doc-section panel" data-doc-section data-doc-title="Overview" data-doc-keywords="overview architecture static frontend pages script css documentation">
+            <div class="doc-heading">
+              <p class="eyebrow">System</p>
+              <h2>Current architecture overview</h2>
+            </div>
+            <p>This portal is currently a static multi-page web application. Each page is served as plain HTML, shares a common stylesheet in <code>styles.css</code>, and relies on a single shared script in <code>main.js</code> for navigation behavior, widgets, theme handling, interactive demos, and browser-local state.</p>
+            <div class="doc-stat-grid">
+              <article class="doc-stat">
+                <strong>11</strong>
+                <span>Public pages</span>
+              </article>
+              <article class="doc-stat">
+                <strong>1</strong>
+                <span>Shared script</span>
+              </article>
+              <article class="doc-stat">
+                <strong>3</strong>
+                <span>Theme modes</span>
+              </article>
+              <article class="doc-stat">
+                <strong>5</strong>
+                <span>Footer links</span>
+              </article>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Static strengths</h3>
+                <ul class="doc-list">
+                  <li>Simple hosting and deploy flow.</li>
+                  <li>No required server runtime for normal browsing.</li>
+                  <li>Fast initial load when assets stay lightweight.</li>
+                  <li>Good fit for public navigation, documentation, link hub behavior, and browser-side layout personalization.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Static limits</h3>
+                <ul class="doc-list">
+                  <li>No real shared user data without backend services.</li>
+                  <li>No authenticated workflow state across devices.</li>
+                  <li>Anonymous room is browser-local, not truly public.</li>
+                  <li>Settings and content changes are client-side only.</li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          <section id="doc-pages" class="doc-section panel" data-doc-section data-doc-title="Page Map" data-doc-keywords="pages page map home workspace services faq settings version legal privacy apps documentation">
+            <div class="doc-heading">
+              <p class="eyebrow">Pages</p>
+              <h2>Public page map</h2>
+            </div>
+            <div class="doc-table">
+              <article class="doc-row">
+                <strong>Home</strong>
+                <span>Landing page with brand entry, quick actions, weather widget context, and overall portal orientation.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Workspace</strong>
+                <span>Personal queue plus Atom Voice, the anonymous room demo with left/right chat alignment.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Services</strong>
+                <span>Combined service catalog and support desk page, including request flow and support contact guidance.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Apps</strong>
+                <span>External and internal tool launcher with priority AML products at the top of the catalog.</span>
+              </article>
+              <article class="doc-row">
+                <strong>AI Assistant</strong>
+                <span>Dedicated assistant page for users who want a larger chat surface than the compact home-page widget.</span>
+              </article>
+              <article class="doc-row">
+                <strong>FAQ</strong>
+                <span>Operational Q&A layer with fast route guidance and entry to this documentation page.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Settings</strong>
+                <span>Theme, notification, and desk-pet preferences stored in browser local storage.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Version / Legal / Privacy</strong>
+                <span>Trust and governance pages explaining release history, usage, and data handling.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Documentation</strong>
+                <span>Technical reference for maintainers, designers, and future backend implementation planning.</span>
+              </article>
+            </div>
+          </section>
+
+          <section id="doc-navigation" class="doc-section panel" data-doc-section data-doc-title="Navigation" data-doc-keywords="navigation header footer shortcuts apps launcher links docs footer documentation">
+            <div class="doc-heading">
+              <p class="eyebrow">Navigation</p>
+              <h2>Header, footer, and launcher structure</h2>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Primary header</h3>
+                <ul class="doc-list">
+                  <li>Brand logo at the left, with the dynamic weather widget beside it.</li>
+                  <li>Main links currently expose Home, Workspace, and Services.</li>
+                  <li>Theme toggle, app launcher, notification bell, and profile menu are injected/managed in shared JavaScript.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Footer links</h3>
+                <ul class="doc-list">
+                  <li>FAQ</li>
+                  <li>Documentation</li>
+                  <li>Version</li>
+                  <li>Legal</li>
+                  <li>Privacy</li>
+                </ul>
+              </article>
+            </div>
+            <div class="doc-note">
+              <strong>Design note:</strong>
+              <p>The separate Support nav route was removed to reduce duplication. Help-desk behavior now lives inside the Services page under the support desk section, and each page section can now be hidden or reordered by the user.</p>
+            </div>
+          </section>
+
+          <section id="doc-features" class="doc-section panel" data-doc-section data-doc-title="Interactive Features" data-doc-keywords="weather desk pet atom voice ai chat easter eggs settings notifications theme system mode">
+            <div class="doc-heading">
+              <p class="eyebrow">Features</p>
+              <h2>Interactive feature inventory</h2>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Theme system</h3>
+                <p>Supports light, dark, and system mode. Theme preference is stored in browser storage, and resolved mode updates the site root data attribute.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Weather widget</h3>
+                <p>Uses client geolocation when allowed, falls back to Yangon when blocked, and maps live weather code plus temperature into icon and color states.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Desk pet</h3>
+                <p>Lightweight floating pet with local preference toggle, JSON-based reminder scripts, contextual messages, and reduced-motion safeguards.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Atom Voice</h3>
+                <p>Anonymous room UI with local demo persistence, sender/right and other/left alignment, and no real cross-user synchronization yet.</p>
+              </article>
+              <article class="doc-card">
+                <h3>AI chat demo</h3>
+                <p>Local interactive chat with fun body-level commands like rotate, drop, and space for temporary visual effects.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Settings toggles</h3>
+                <p>Clickable switches for user-facing preferences. Current behavior is browser-local and intended as a frontend foundation.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Section layout controls</h3>
+                <p>Each page section now has per-section controls for hiding and drag-and-drop sorting, plus a floating assistant pet that opens the restore/reset panel and persists layout choices per page.</p>
+              </article>
+            </div>
+          </section>
+
+          <section id="doc-storage" class="doc-section panel" data-doc-section data-doc-title="Storage and Data" data-doc-keywords="storage data local storage settings theme anonymous messages json weather scripts">
+            <div class="doc-heading">
+              <p class="eyebrow">Data</p>
+              <h2>Storage, local state, and data sources</h2>
+            </div>
+            <div class="doc-table">
+              <article class="doc-row">
+                <strong><code>staff_theme</code></strong>
+                <span>Stores selected theme mode: light, dark, or system.</span>
+              </article>
+              <article class="doc-row">
+                <strong><code>staff_settings</code></strong>
+                <span>Stores settings toggles like browser alerts, email digest, product updates, and desk pet visibility.</span>
+              </article>
+              <article class="doc-row">
+                <strong><code>staff_layout_[page]</code></strong>
+                <span>Stores per-page hidden sections and drag-sorted order so each page layout can be personalized in the current browser.</span>
+              </article>
+              <article class="doc-row">
+                <strong><code>public_room_messages</code></strong>
+                <span>Stores Atom Voice demo messages in the local browser profile only.</span>
+              </article>
+              <article class="doc-row">
+                <strong><code>assets/pet-scripts.json</code></strong>
+                <span>Holds structured reminder scripts by condition so future content can be expanded without touching logic.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Open-Meteo</strong>
+                <span>Client-side weather source for current conditions and icon/color mapping.</span>
+              </article>
+            </div>
+            <div class="doc-note">
+              <strong>Important limitation:</strong>
+              <p>All current persistence is local to the browser. Nothing here is authoritative user data until a backend system is introduced.</p>
+            </div>
+          </section>
+
+          <section id="doc-backend" class="doc-section panel" data-doc-section data-doc-title="Backend Migration" data-doc-keywords="backend api database auth dynamic website websocket notifications services queue atom voice ai deployment cms audit">
+            <div class="doc-heading">
+              <p class="eyebrow">Dynamic Future</p>
+              <h2>What must connect to backend services</h2>
+            </div>
+            <p>If this portal moves from static to dynamic, the frontend already suggests several product areas that should no longer depend on browser-local placeholders. The items below are the minimum backend domains to plan.</p>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Authentication and identity</h3>
+                <ul class="doc-list">
+                  <li>SSO or company identity integration.</li>
+                  <li>User session handling and token refresh.</li>
+                  <li>Role-based access control for staff, admin, and reviewer views.</li>
+                  <li>Profile data source for avatar, name, department, and permissions.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Requests and queue data</h3>
+                <ul class="doc-list">
+                  <li>Services catalog should be driven by backend-configured teams and forms.</li>
+                  <li>Workspace queue counts should come from real approvals, tickets, and tasks.</li>
+                  <li>Support desk readiness should come from operational metrics or ticketing APIs.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Atom Voice real-time room</h3>
+                <ul class="doc-list">
+                  <li>Database-backed message storage.</li>
+                  <li>Real-time transport via WebSocket or server-sent events.</li>
+                  <li>Moderation rules, rate limiting, abuse controls, and retention policy.</li>
+                  <li>Optional anonymous session identifiers without exposing personal identity.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Settings sync</h3>
+                <ul class="doc-list">
+                  <li>User preferences API for theme, notifications, and pet visibility.</li>
+                  <li>Cross-device sync so settings remain stable outside one browser.</li>
+                  <li>Notification preference mapping to email, browser push, and in-app delivery.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Notification service</h3>
+                <ul class="doc-list">
+                  <li>Unread notifications endpoint.</li>
+                  <li>Read/unread state and notification categories.</li>
+                  <li>Browser push infrastructure if real opt-in is needed.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>AI assistant integration</h3>
+                <ul class="doc-list">
+                  <li>Secure chat endpoint for prompts and responses.</li>
+                  <li>Guardrails for allowed topics and access boundaries.</li>
+                  <li>Conversation logging policy and retention design.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Content management</h3>
+                <ul class="doc-list">
+                  <li>FAQ, version notes, legal, privacy, and documentation content should ideally move into an admin-managed content source.</li>
+                  <li>Release notes and footer links should be editable without manual HTML changes.</li>
+                  <li>User-personalized section layouts should move to server-backed user preferences if cross-device consistency is required.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Operational controls</h3>
+                <ul class="doc-list">
+                  <li>Audit logs for profile actions, preference changes, and moderation events.</li>
+                  <li>Error monitoring and analytics.</li>
+                  <li>Feature flags to release pet, AI, chat, or docs features safely.</li>
+                </ul>
+              </article>
+            </div>
+            <div class="doc-note">
+              <strong>Recommended order:</strong>
+              <p>Identity, services/queue APIs, and notifications should come first. Real-time Atom Voice, admin-managed content, and AI chat can follow after access control and data ownership are stable.</p>
+            </div>
+          </section>
+
+          <section id="doc-design" class="doc-section panel" data-doc-section data-doc-title="Design System" data-doc-keywords="design system ui ux texture gradients cards typography layout responsive">
+            <div class="doc-heading">
+              <p class="eyebrow">Design</p>
+              <h2>Visual system and layout rules</h2>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Typography</h3>
+                <p><strong>Manrope</strong> handles dense UI text while <strong>Space Grotesk</strong> gives section titles a more branded voice. This split keeps the interface readable without looking generic.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Surface style</h3>
+                <p>Most panels use soft gradients, rounded corners, low-contrast borders, and restrained shadows rather than heavy glassmorphism. This helps maintain polish without causing heavy scroll repaint cost.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Light mode direction</h3>
+                <p>Light mode intentionally carries more color and visible texture so the site avoids flat corporate white. Decorative motion was reduced earlier to improve scroll smoothness.</p>
+              </article>
+              <article class="doc-card">
+                <h3>Responsive approach</h3>
+                <p>Layouts progressively collapse from multi-column boards to stacked panels, with dedicated rules for header wrapping, chat widgets, app grids, and fixed utility elements.</p>
+              </article>
+            </div>
+          </section>
+
+          <section id="doc-palette" class="doc-section panel" data-doc-section data-doc-title="Color Palette" data-doc-keywords="color palette accent light mode dark mode blue green orange red texture">
+            <div class="doc-heading">
+              <p class="eyebrow">Palette</p>
+              <h2>Color palette and UI roles</h2>
+            </div>
+            <p>The interface uses a soft multi-accent palette rather than a single-brand monotone. The goal is to keep the product warm and usable in light mode while still supporting dark mode cleanly.</p>
+            <div class="palette-grid">
+              <article class="palette-card">
+                <span class="palette-swatch palette-blue"></span>
+                <strong>Accent 1</strong>
+                <p>Primary actions, links, active pills, weather cool states, and structured UI emphasis.</p>
+              </article>
+              <article class="palette-card">
+                <span class="palette-swatch palette-green"></span>
+                <strong>Accent 2</strong>
+                <p>Success states, wellness notes, positive cards, and selected support-friendly accents.</p>
+              </article>
+              <article class="palette-card">
+                <span class="palette-swatch palette-orange"></span>
+                <strong>Accent 3</strong>
+                <p>Warm highlights, attention markers, weather warmth, and texture variation in light mode.</p>
+              </article>
+              <article class="palette-card">
+                <span class="palette-swatch palette-red"></span>
+                <strong>Accent 4</strong>
+                <p>Urgency, caution, legal/privacy emphasis, and occasional contrast support for key badges.</p>
+              </article>
+            </div>
+            <div class="doc-table">
+              <article class="doc-row">
+                <strong>Background texture</strong>
+                <span>Static layered gradients and subtle pattern overlays are preferred over constant background animation.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Dark mode</strong>
+                <span>Maintains the same accent logic with darker surfaces and lifted text contrast instead of oversaturated neon treatment.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Accessibility</strong>
+                <span>Accent use should continue to pair with text labels and not rely on color alone for meaning.</span>
+              </article>
+            </div>
+          </section>
+
+          <section id="doc-quality" class="doc-section panel" data-doc-section data-doc-title="Quality and Risks" data-doc-keywords="quality risks performance accessibility maintainability browser testing deployment">
+            <div class="doc-heading">
+              <p class="eyebrow">Quality</p>
+              <h2>Performance, accessibility, and maintainability notes</h2>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Performance</h3>
+                <ul class="doc-list">
+                  <li>Continuous decorative motion was reduced to improve scroll behavior.</li>
+                  <li>Transform/opacity are preferred over layout-changing animation.</li>
+                  <li>Heavy blur and broad universal transitions should stay limited.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Accessibility</h3>
+                <ul class="doc-list">
+                  <li>Keyboard shortcuts avoid firing while typing in inputs.</li>
+                  <li>Form controls include labels or accessible names.</li>
+                  <li>Reduced-motion handling is already relevant for the desk pet and animated UI areas.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Maintainability</h3>
+                <ul class="doc-list">
+                  <li>Shared HTML fragments are currently duplicated page by page.</li>
+                  <li>A component or template system would reduce repeated nav/footer edits.</li>
+                  <li>Version notes should stay aligned with footer counts and page inventory.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Testing gaps</h3>
+                <ul class="doc-list">
+                  <li>No automated browser regression suite currently exists.</li>
+                  <li>Interactive behavior depends on manual verification in viewport/device testing.</li>
+                  <li>Search and docs topic filtering should be checked on mobile after each structural docs change.</li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          <section id="doc-shortcuts" class="doc-section panel" data-doc-section data-doc-title="Shortcuts" data-doc-keywords="shortcuts alt home workspace services documentation settings faq version legal privacy">
+            <div class="doc-heading">
+              <p class="eyebrow">Shortcuts</p>
+              <h2>Global page shortcut map</h2>
+            </div>
+            <div class="doc-table">
+              <article class="doc-row"><strong>Alt + H</strong><span>Home</span></article>
+              <article class="doc-row"><strong>Alt + W</strong><span>Workspace</span></article>
+              <article class="doc-row"><strong>Alt + S</strong><span>Services</span></article>
+              <article class="doc-row"><strong>Alt + E</strong><span>Documentation</span></article>
+              <article class="doc-row"><strong>Alt + T</strong><span>Settings</span></article>
+              <article class="doc-row"><strong>Alt + Q</strong><span>FAQ</span></article>
+              <article class="doc-row"><strong>Alt + V</strong><span>Version</span></article>
+              <article class="doc-row"><strong>Alt + L</strong><span>Legal</span></article>
+              <article class="doc-row"><strong>Alt + P</strong><span>Privacy</span></article>
+            </div>
+            <div class="doc-note">
+              <strong>Behavior:</strong>
+              <p>Shortcuts are only intended for page navigation. They do not run while focus is inside an input, textarea, select, or editable region.</p>
+            </div>
+          </section>
+
+          <div class="doc-empty panel" data-doc-empty hidden>
+            <h2>No topic matched the search.</h2>
+            <p>Try a simpler term like <code>weather</code>, <code>backend</code>, <code>palette</code>, or <code>Atom Voice</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>ATOM Workspace</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="faq.html">FAQ</a>
+        <a href="technical.html">Documentation</a>
+        <a href="version.html">Version</a>
+        <a href="legal.html">Legal</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

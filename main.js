@@ -34,8 +34,21 @@ const navLinks = document.querySelectorAll("[data-link]");
 const themeStorageKey = "staff_theme";
 const settingsStorageKey = "staff_settings";
 const themeModes = ["light", "dark", "system"];
+const pageShortcuts = {
+  h: "index.html",
+  w: "workspace.html",
+  s: "services.html",
+  t: "settings.html",
+  q: "faq.html",
+  e: "technical.html",
+  v: "version.html",
+  l: "legal.html",
+  p: "privacy.html"
+};
 const root = document.documentElement;
 const brand = document.querySelector(".brand");
+const portalStoragePrefixes = ["staff_layout_"];
+const portalStorageKeys = [themeStorageKey, settingsStorageKey, "public_room_messages"];
 const systemThemeMedia =
   typeof window.matchMedia === "function"
     ? window.matchMedia("(prefers-color-scheme: dark)")
@@ -52,6 +65,56 @@ let weatherWidgetMetaNode = null;
 let weatherTriggerNode = null;
 let weatherPopoverIconNode = null;
 let latestWeatherSummary = "Weather data is loading for Yangon.";
+const petScriptsUrl = "assets/pet-scripts.json";
+const fallbackPetScripts = {
+  scriptsByCondition: {
+    sedentary_long: [
+      "Time to stand up and stretch for one minute.",
+      "Tiny exercise break. Your chair can wait.",
+      "Please walk a few steps and wake your legs up."
+    ],
+    cold_weather: [
+      "It feels cold. Keep warm and relax your shoulders.",
+      "Chilly reminder: warm your hands before more typing."
+    ],
+    mosquito_care: [
+      "Mosquito check. Keep repellent nearby if needed.",
+      "Evening bug reminder: protect your skin and rest easy."
+    ],
+    eye_care: [
+      "Eye break time. Look away from the screen for a moment.",
+      "Blink slowly and let your eyes relax."
+    ],
+    relax_break: [
+      "Take one deep breath and unclench your jaw.",
+      "A calm minute still counts as progress."
+    ],
+    music_boost: [
+      "A gentle song could make this task feel lighter.",
+      "Queue one favorite track and keep moving."
+    ],
+    kindness_love: [
+      "Be kind to yourself. You are doing enough for this moment.",
+      "A little love for your future self starts with one small break."
+    ]
+  }
+};
+let deskPetNode = null;
+let deskPetButtonNode = null;
+let deskPetBubbleNode = null;
+let deskPetBubbleTimer = null;
+let deskPetReminderTimer = null;
+let deskPetScriptsByCondition = { ...fallbackPetScripts.scriptsByCondition };
+let deskPetLastMessage = "";
+let deskPetLastCondition = "";
+let deskPetVisibleAccumulatedMs = 0;
+let deskPetVisibleStartedAt = document.hidden ? null : Date.now();
+let latestWeatherState = {
+  icon: "cloud",
+  temperature: null,
+  isDay: true,
+  location: defaultWeatherLocation.label
+};
 
 function getStoredTheme() {
   try {
@@ -99,6 +162,630 @@ function setStoredSettings(settings) {
   }
 }
 
+function slugifyText(value) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+}
+
+function getLayoutStorageKey() {
+  return `staff_layout_${pageName || "page"}`;
+}
+
+function getLayoutSections() {
+  if (pageName === "technical") {
+    return [...document.querySelectorAll("[data-doc-section]")];
+  }
+
+  const main = document.querySelector("main");
+  if (!main) {
+    return [];
+  }
+
+  return [...main.querySelectorAll(":scope > section")];
+}
+
+function getSectionLabel(section, index) {
+  const heading = section.querySelector("h1, h2, h3");
+  if (heading?.textContent.trim()) {
+    return heading.textContent.trim();
+  }
+
+  const eyebrow = section.querySelector(".eyebrow");
+  if (eyebrow?.textContent.trim()) {
+    return eyebrow.textContent.trim();
+  }
+
+  return `Section ${index + 1}`;
+}
+
+function getStoredLayoutState() {
+  try {
+    const stored = window.localStorage.getItem(getLayoutStorageKey());
+    if (!stored) {
+      return null;
+    }
+
+    const parsed = JSON.parse(stored);
+    if (parsed && typeof parsed === "object") {
+      return {
+        order: Array.isArray(parsed.order) ? parsed.order : [],
+        hidden: Array.isArray(parsed.hidden) ? parsed.hidden : []
+      };
+    }
+  } catch (_error) {
+    return null;
+  }
+
+  return null;
+}
+
+function setStoredLayoutState(state) {
+  try {
+    window.localStorage.setItem(getLayoutStorageKey(), JSON.stringify(state));
+  } catch (_error) {
+    // Ignore layout write failures.
+  }
+}
+
+function clearStoredLayoutState() {
+  try {
+    window.localStorage.removeItem(getLayoutStorageKey());
+  } catch (_error) {
+    // Ignore layout clear failures.
+  }
+}
+
+function clearPortalStorage() {
+  try {
+    const keysToRemove = [];
+
+    for (let index = 0; index < window.localStorage.length; index += 1) {
+      const key = window.localStorage.key(index);
+      if (!key) {
+        continue;
+      }
+
+      if (
+        portalStorageKeys.includes(key) ||
+        portalStoragePrefixes.some((prefix) => key.startsWith(prefix))
+      ) {
+        keysToRemove.push(key);
+      }
+    }
+
+    keysToRemove.forEach((key) => {
+      window.localStorage.removeItem(key);
+    });
+  } catch (_error) {
+    // Ignore storage clear failures.
+  }
+}
+
+function layoutDragIconSvg() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"/></svg>';
+}
+
+function layoutHideIconSvg() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><path d="M9.9 9.9a3 3 0 1 0 4.2 4.2"/><path d="m4 4 16 16"/></svg>';
+}
+
+function layoutRestoreIconSvg() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+function layoutResetIconSvg() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>';
+}
+
+function layoutAssistantPetSvg() {
+  return `
+    <svg class="layout-assistant-pet-svg" viewBox="0 0 96 96" aria-hidden="true">
+      <path class="layout-assistant-pet-ear" d="M29 34 34 19l12 12" />
+      <path class="layout-assistant-pet-ear" d="M51 31 64 20l3 16" />
+      <path class="layout-assistant-pet-tail" d="M72 58c8 2 12 9 10 15-2 6-8 9-14 7" />
+      <ellipse class="layout-assistant-pet-body" cx="48" cy="56" rx="23" ry="21" />
+      <ellipse class="layout-assistant-pet-belly" cx="48" cy="61" rx="12" ry="10" />
+      <circle class="layout-assistant-pet-eye" cx="40" cy="52" r="2.7" />
+      <circle class="layout-assistant-pet-eye" cx="56" cy="52" r="2.7" />
+      <circle class="layout-assistant-pet-blush" cx="34" cy="58" r="3" />
+      <circle class="layout-assistant-pet-blush" cx="62" cy="58" r="3" />
+      <path class="layout-assistant-pet-mouth" d="M44 60c1.8 2 5.2 2 7 0" />
+      <ellipse class="layout-assistant-pet-paw" cx="39" cy="74" rx="5" ry="3.8" />
+      <ellipse class="layout-assistant-pet-paw" cx="57" cy="74" rx="5" ry="3.8" />
+    </svg>
+  `;
+}
+
+function setupPageLayoutManager() {
+  const sections = getLayoutSections();
+  if (!sections.length) {
+    return;
+  }
+
+  const main = document.querySelector("main");
+  if (!main) {
+    return;
+  }
+
+  const ids = new Set();
+  sections.forEach((section, index) => {
+    const label = getSectionLabel(section, index);
+    let baseId = section.id ? slugifyText(section.id) : slugifyText(label);
+    if (!baseId) {
+      baseId = `section-${index + 1}`;
+    }
+
+    let layoutId = `${pageName || "page"}-${baseId}`;
+    let counter = 2;
+    while (ids.has(layoutId)) {
+      layoutId = `${pageName || "page"}-${baseId}-${counter}`;
+      counter += 1;
+    }
+
+    ids.add(layoutId);
+    section.dataset.layoutId = layoutId;
+    section.dataset.layoutLabel = label;
+    section.classList.add("layout-section");
+  });
+
+  const initialOrder = sections.map((section) => section.dataset.layoutId);
+  const initialTopicOrder = pageName === "technical"
+    ? [...document.querySelectorAll("[data-doc-topic]")].map((button) => button.dataset.docTopic)
+    : [];
+  const state = getStoredLayoutState() || {
+    order: [...initialOrder],
+    hidden: []
+  };
+  const sectionMap = new Map(
+    sections.map((section) => [section.dataset.layoutId, section])
+  );
+
+  const manager = document.createElement("div");
+  manager.className = "layout-assistant";
+  manager.innerHTML = `
+    <button class="layout-assistant-ball" type="button" aria-label="Open page customization assistant" aria-expanded="false" data-layout-toggle>
+      <span class="layout-assistant-icon">
+        ${layoutAssistantPetSvg()}
+      </span>
+      <span class="layout-assistant-badge" data-layout-badge hidden></span>
+      <span class="pet-namecard pet-namecard-assistant" aria-hidden="true">
+        <strong>Tom</strong>
+        <span>Layout Love Engineer</span>
+      </span>
+    </button>
+    <div class="layout-assistant-panel" data-layout-panel hidden>
+      <div class="layout-assistant-panel-head">
+        <strong>Customize This Page</strong>
+        <span>Hide sections or drag them into the order you prefer.</span>
+      </div>
+      <div class="layout-manager-actions">
+        <div class="layout-hidden-list" data-layout-hidden-list></div>
+        <button class="layout-reset-btn" type="button" data-layout-reset>
+          ${layoutResetIconSvg()}
+          <span>Reset Layout</span>
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(manager);
+
+  const hiddenList = manager.querySelector("[data-layout-hidden-list]");
+  const resetButton = manager.querySelector("[data-layout-reset]");
+  const toggleButton = manager.querySelector("[data-layout-toggle]");
+  const panel = manager.querySelector("[data-layout-panel]");
+  const badge = manager.querySelector("[data-layout-badge]");
+  let draggedSectionId = "";
+
+  function setAssistantOpen(isOpen) {
+    if (!toggleButton || !panel) {
+      return;
+    }
+
+    toggleButton.setAttribute("aria-expanded", String(isOpen));
+    manager.classList.toggle("is-open", isOpen);
+    panel.hidden = !isOpen;
+  }
+
+  function getCurrentSections() {
+    return getLayoutSections().filter((section) => section.dataset.layoutId);
+  }
+
+  function syncDocumentationTopicOrder() {
+    if (pageName !== "technical") {
+      return;
+    }
+
+    const topicList = document.querySelector(".docs-topic-list");
+    if (!topicList) {
+      return;
+    }
+
+    getCurrentSections().forEach((section) => {
+      const topicButton = topicList.querySelector(`[data-doc-topic="${section.id}"]`);
+      if (topicButton) {
+        topicList.appendChild(topicButton);
+      }
+    });
+  }
+
+  function refreshDocumentationLayout() {
+    if (pageName === "technical" && typeof window.refreshDocumentationPageLayout === "function") {
+      window.refreshDocumentationPageLayout();
+    }
+  }
+
+  function saveLayoutState() {
+    const order = getCurrentSections().map((section) => section.dataset.layoutId);
+    const hidden = order.filter((id) => {
+      const section = sectionMap.get(id);
+      return section?.dataset.layoutHidden === "true";
+    });
+
+    state.order = order;
+    state.hidden = hidden;
+    setStoredLayoutState(state);
+  }
+
+  function setSectionHidden(section, hidden) {
+    section.dataset.layoutHidden = hidden ? "true" : "false";
+    section.classList.toggle("is-layout-hidden", hidden);
+    refreshDocumentationLayout();
+  }
+
+  function renderHiddenSections() {
+    if (!hiddenList) {
+      return;
+    }
+
+    const hiddenSections = getCurrentSections().filter(
+      (section) => section.dataset.layoutHidden === "true"
+    );
+
+    if (badge) {
+      badge.textContent = String(hiddenSections.length);
+      badge.hidden = hiddenSections.length === 0;
+    }
+
+    if (!hiddenSections.length) {
+      hiddenList.innerHTML = '<span class="layout-hidden-empty">No hidden sections</span>';
+      return;
+    }
+
+    hiddenList.innerHTML = "";
+    hiddenSections.forEach((section) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "layout-hidden-chip";
+      chip.innerHTML = `${layoutRestoreIconSvg()}<span>${section.dataset.layoutLabel}</span>`;
+      chip.addEventListener("click", () => {
+        setSectionHidden(section, false);
+        renderHiddenSections();
+        saveLayoutState();
+      });
+      hiddenList.appendChild(chip);
+    });
+  }
+
+  function applyStoredOrder(order) {
+    const parent = getCurrentSections()[0]?.parentElement;
+    if (!parent) {
+      return;
+    }
+
+    order.forEach((id) => {
+      const section = sectionMap.get(id);
+      if (section && section.parentElement === parent) {
+        parent.appendChild(section);
+      }
+    });
+
+    syncDocumentationTopicOrder();
+  }
+
+  function resetLayout() {
+    applyStoredOrder(initialOrder);
+    getCurrentSections().forEach((section) => {
+      setSectionHidden(section, false);
+    });
+
+    if (pageName === "technical") {
+      const topicList = document.querySelector(".docs-topic-list");
+      if (topicList) {
+        initialTopicOrder.forEach((topicId) => {
+          const button = topicList.querySelector(`[data-doc-topic="${topicId}"]`);
+          if (button) {
+            topicList.appendChild(button);
+          }
+        });
+      }
+    }
+
+    state.order = [...initialOrder];
+    state.hidden = [];
+    clearStoredLayoutState();
+    renderHiddenSections();
+    refreshDocumentationLayout();
+  }
+
+  sections.forEach((section) => {
+    const label = section.dataset.layoutLabel || "Section";
+    const controls = document.createElement("div");
+    controls.className = "layout-section-controls";
+    controls.innerHTML = `
+      <button class="layout-control-btn layout-drag-handle" type="button" draggable="true" aria-label="Drag to reorder ${label}" title="Drag to reorder">
+        ${layoutDragIconSvg()}
+      </button>
+      <button class="layout-control-btn layout-hide-btn" type="button" aria-label="Hide ${label}" title="Hide section">
+        ${layoutHideIconSvg()}
+      </button>
+    `;
+    section.appendChild(controls);
+
+    const dragHandle = controls.querySelector(".layout-drag-handle");
+    const hideButton = controls.querySelector(".layout-hide-btn");
+
+    if (dragHandle) {
+      dragHandle.addEventListener("dragstart", (event) => {
+        draggedSectionId = section.dataset.layoutId || "";
+        section.classList.add("is-layout-dragging");
+        if (event.dataTransfer) {
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", draggedSectionId);
+        }
+      });
+
+      dragHandle.addEventListener("dragend", () => {
+        draggedSectionId = "";
+        getCurrentSections().forEach((item) => {
+          item.classList.remove("is-layout-dragging", "is-layout-drop-target");
+        });
+        saveLayoutState();
+      });
+    }
+
+    if (hideButton) {
+      hideButton.addEventListener("click", () => {
+        setSectionHidden(section, true);
+        renderHiddenSections();
+        saveLayoutState();
+      });
+    }
+
+    section.addEventListener("dragover", (event) => {
+      if (!draggedSectionId || draggedSectionId === section.dataset.layoutId) {
+        return;
+      }
+
+      event.preventDefault();
+      const draggedSection = sectionMap.get(draggedSectionId);
+      if (!draggedSection || !section.parentElement) {
+        return;
+      }
+
+      const rect = section.getBoundingClientRect();
+      const insertAfter = event.clientY > rect.top + rect.height / 2;
+      section.classList.add("is-layout-drop-target");
+
+      if (insertAfter) {
+        section.parentElement.insertBefore(draggedSection, section.nextSibling);
+      } else {
+        section.parentElement.insertBefore(draggedSection, section);
+      }
+
+      syncDocumentationTopicOrder();
+    });
+
+    section.addEventListener("dragleave", () => {
+      section.classList.remove("is-layout-drop-target");
+    });
+
+    section.addEventListener("drop", (event) => {
+      if (!draggedSectionId) {
+        return;
+      }
+
+      event.preventDefault();
+      section.classList.remove("is-layout-drop-target");
+      saveLayoutState();
+    });
+  });
+
+  if (resetButton) {
+    resetButton.addEventListener("click", resetLayout);
+  }
+
+  if (toggleButton && panel) {
+    toggleButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setAssistantOpen(panel.hidden);
+    });
+
+    manager.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    document.addEventListener("click", () => {
+      setAssistantOpen(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setAssistantOpen(false);
+      }
+    });
+  }
+
+  applyStoredOrder(state.order);
+  getCurrentSections().forEach((section) => {
+    setSectionHidden(section, state.hidden.includes(section.dataset.layoutId));
+  });
+  renderHiddenSections();
+  saveLayoutState();
+}
+
+function setupDocumentationPage() {
+  const searchInput = document.querySelector("[data-doc-search]");
+  const topicButtons = [...document.querySelectorAll("[data-doc-topic]")];
+  const sections = [...document.querySelectorAll("[data-doc-section]")];
+  const emptyState = document.querySelector("[data-doc-empty]");
+
+  if (!searchInput || !topicButtons.length || !sections.length) {
+    return;
+  }
+
+  const topicMap = new Map(
+    topicButtons.map((button) => [button.dataset.docTopic, button])
+  );
+
+  function setActiveTopic(sectionId, updateHash = false) {
+    topicButtons.forEach((button) => {
+      const isActive = button.dataset.docTopic === sectionId;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    if (updateHash && window.location.hash !== `#${sectionId}`) {
+      window.history.replaceState(null, "", `#${sectionId}`);
+    }
+  }
+
+  function getVisibleSections() {
+    return [...document.querySelectorAll("[data-doc-section]")].filter((section) => !section.hidden);
+  }
+
+  function filterSections() {
+    const query = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    sections.forEach((section) => {
+      const text = [
+        section.dataset.docTitle || "",
+        section.dataset.docKeywords || "",
+        section.textContent || ""
+      ]
+        .join(" ")
+        .toLowerCase();
+      const isLayoutHidden = section.dataset.layoutHidden === "true";
+      const isVisible = !isLayoutHidden && (!query || text.includes(query));
+      section.hidden = !isVisible;
+
+      const topicButton = topicMap.get(section.id);
+      if (topicButton) {
+        topicButton.hidden = !isVisible;
+      }
+
+      if (isVisible) {
+        visibleCount += 1;
+      }
+    });
+
+    if (emptyState) {
+      emptyState.hidden = visibleCount !== 0;
+    }
+
+    const visibleSections = getVisibleSections();
+    if (!visibleSections.length) {
+      return;
+    }
+
+    const currentHash = window.location.hash.slice(1);
+    const nextSection =
+      visibleSections.find((section) => section.id === currentHash) || visibleSections[0];
+    setActiveTopic(nextSection.id);
+  }
+
+  topicButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.classList.contains("active")));
+    button.addEventListener("click", () => {
+      const sectionId = button.dataset.docTopic;
+      if (!sectionId) {
+        return;
+      }
+
+      const targetSection = document.getElementById(sectionId);
+      if (!targetSection || targetSection.hidden) {
+        return;
+      }
+
+      setActiveTopic(sectionId, true);
+      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  searchInput.addEventListener("input", filterSections);
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntry = entries.find((entry) => entry.isIntersecting && !entry.target.hidden);
+        if (!visibleEntry) {
+          return;
+        }
+
+        setActiveTopic(visibleEntry.target.id);
+      },
+      {
+        rootMargin: "-28% 0px -55% 0px",
+        threshold: 0.12
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+
+  const initialHash = window.location.hash.slice(1);
+  const initialSection = sections.find((section) => section.id === initialHash);
+  if (initialSection) {
+    setActiveTopic(initialSection.id);
+  }
+
+  window.refreshDocumentationPageLayout = filterSections;
+  filterSections();
+}
+
+function isTypingTarget(target) {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  const tagName = target.tagName;
+  return (
+    target.isContentEditable ||
+    tagName === "INPUT" ||
+    tagName === "TEXTAREA" ||
+    tagName === "SELECT"
+  );
+}
+
+function handlePageShortcut(event) {
+  if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+    return false;
+  }
+
+  if (isTypingTarget(event.target)) {
+    return false;
+  }
+
+  const key = event.key.toLowerCase();
+  const nextPage = pageShortcuts[key];
+  if (!nextPage) {
+    return false;
+  }
+
+  event.preventDefault();
+
+  const currentPath = window.location.pathname.split("/").pop() || "index.html";
+  if (currentPath === nextPage) {
+    return true;
+  }
+
+  window.location.href = nextPage;
+  return true;
+}
+
 function setupWeatherWidget() {
   if (!brand || !brand.parentElement) {
     return;
@@ -140,6 +827,222 @@ function setupWeatherWidget() {
   weatherWidgetStatusNode = weatherWidget.querySelector("[data-nav-weather-status]");
   weatherWidgetLocationNode = weatherWidget.querySelector("[data-nav-weather-location]");
   weatherWidgetMetaNode = weatherWidget.querySelector("[data-nav-weather-meta]");
+}
+
+function deskPetSvg() {
+  return `
+    <svg class="desk-pet-svg" viewBox="0 0 96 96" aria-hidden="true">
+      <path class="desk-pet-tail" d="M72 57c9 1 14 8 12 16-2 8-10 12-18 8" />
+      <path class="desk-pet-ear" d="M31 28 39 17l9 14" />
+      <path class="desk-pet-ear" d="M49 31 58 17l8 13" />
+      <ellipse class="desk-pet-body" cx="48" cy="56" rx="24" ry="22" />
+      <ellipse class="desk-pet-belly" cx="48" cy="61" rx="13" ry="11" />
+      <circle class="desk-pet-eye" cx="40" cy="52" r="2.8" />
+      <circle class="desk-pet-eye" cx="56" cy="52" r="2.8" />
+      <circle class="desk-pet-blush" cx="33" cy="58" r="3.2" />
+      <circle class="desk-pet-blush" cx="63" cy="58" r="3.2" />
+      <path class="desk-pet-mouth" d="M45 60c1.5 2 4.5 2 6 0" />
+      <path class="desk-pet-whisker" d="M21 54h11M21 59h10M64 54h11M65 59h10" />
+      <ellipse class="desk-pet-paw" cx="39" cy="74" rx="5.5" ry="4" />
+      <ellipse class="desk-pet-paw" cx="57" cy="74" rx="5.5" ry="4" />
+    </svg>
+  `;
+}
+
+function setupDeskPet() {
+  if (!document.body || deskPetNode) {
+    return;
+  }
+
+  const pet = document.createElement("div");
+  pet.className = "desk-pet";
+  pet.hidden = true;
+  pet.innerHTML = `
+    <button class="desk-pet-button" type="button" aria-label="Desk pet">
+      <span class="pet-namecard" aria-hidden="true">
+        <strong>Daisy</strong>
+        <span>Chief Comfort Officer</span>
+      </span>
+      <span class="desk-pet-bubble" aria-hidden="true">Hi</span>
+      ${deskPetSvg()}
+    </button>
+  `;
+
+  document.body.appendChild(pet);
+  deskPetNode = pet;
+  deskPetButtonNode = pet.querySelector(".desk-pet-button");
+  deskPetBubbleNode = pet.querySelector(".desk-pet-bubble");
+
+  if (deskPetButtonNode) {
+    deskPetButtonNode.addEventListener("click", () => {
+      if (!deskPetNode || deskPetNode.hidden) {
+        return;
+      }
+
+      showDeskPetReminder();
+      queueDeskPetReminder(180000);
+    });
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && deskPetVisibleStartedAt) {
+      deskPetVisibleAccumulatedMs += Date.now() - deskPetVisibleStartedAt;
+      deskPetVisibleStartedAt = null;
+    } else if (!document.hidden && !deskPetVisibleStartedAt) {
+      deskPetVisibleStartedAt = Date.now();
+    }
+
+    syncDeskPet();
+  });
+}
+
+async function loadDeskPetScripts() {
+  if (typeof fetch !== "function") {
+    deskPetScriptsByCondition = { ...fallbackPetScripts.scriptsByCondition };
+    return;
+  }
+
+  try {
+    const response = await fetch(petScriptsUrl);
+    if (!response.ok) {
+      throw new Error(`Pet script request failed with ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data && data.scriptsByCondition && typeof data.scriptsByCondition === "object") {
+      deskPetScriptsByCondition = data.scriptsByCondition;
+      return;
+    }
+  } catch (_error) {
+    deskPetScriptsByCondition = { ...fallbackPetScripts.scriptsByCondition };
+  }
+}
+
+function animateDeskPetBubble(message) {
+  if (!deskPetNode || !deskPetBubbleNode || !message) {
+    return;
+  }
+
+  deskPetBubbleNode.textContent = message;
+  deskPetNode.classList.remove("is-wave");
+  void deskPetNode.offsetWidth;
+  deskPetNode.classList.add("is-wave");
+
+  window.clearTimeout(deskPetBubbleTimer);
+  deskPetBubbleTimer = window.setTimeout(() => {
+    if (deskPetNode) {
+      deskPetNode.classList.remove("is-wave");
+    }
+  }, 5200);
+}
+
+function getDeskPetActiveConditions() {
+  const visibleMs =
+    deskPetVisibleAccumulatedMs +
+    (deskPetVisibleStartedAt ? Date.now() - deskPetVisibleStartedAt : 0);
+  const elapsedMinutes = Math.floor(visibleMs / 60000);
+  const active = new Set(["kindness_love"]);
+
+  if (elapsedMinutes >= 12) {
+    active.add("music_boost");
+  }
+
+  if (elapsedMinutes >= 18) {
+    active.add("eye_care");
+  }
+
+  if (elapsedMinutes >= 24) {
+    active.add("posture_check");
+  }
+
+  if (elapsedMinutes >= 30) {
+    active.add("relax_break");
+  }
+
+  if (elapsedMinutes >= 36) {
+    active.add("hydration_break");
+  }
+
+  if (elapsedMinutes >= 45) {
+    active.add("sedentary_long");
+  }
+
+  if (typeof latestWeatherState.temperature === "number" && latestWeatherState.temperature <= 20) {
+    active.add("cold_weather");
+  }
+
+  if (["rain", "fog", "storm"].includes(latestWeatherState.icon)) {
+    active.add("rainy_weather");
+  }
+
+  if (
+    ["rain", "fog", "storm"].includes(latestWeatherState.icon) ||
+    (!latestWeatherState.isDay && typeof latestWeatherState.temperature === "number" && latestWeatherState.temperature >= 26)
+  ) {
+    active.add("mosquito_care");
+  }
+
+  return [
+    "sedentary_long",
+    "cold_weather",
+    "mosquito_care",
+    "rainy_weather",
+    "eye_care",
+    "posture_check",
+    "hydration_break",
+    "relax_break",
+    "music_boost",
+    "kindness_love"
+  ].filter((condition) => active.has(condition));
+}
+
+function pickDeskPetScript() {
+  const activeConditions = getDeskPetActiveConditions().filter((condition) => {
+    return Array.isArray(deskPetScriptsByCondition[condition]) && deskPetScriptsByCondition[condition].length > 0;
+  });
+
+  const candidateConditions = activeConditions.length > 0 ? activeConditions : ["kindness_love"];
+  const conditionPool =
+    candidateConditions.length > 1
+      ? candidateConditions.filter((condition) => condition !== deskPetLastCondition)
+      : candidateConditions;
+  const nextCondition = conditionPool[Math.floor(Math.random() * conditionPool.length)] || "kindness_love";
+  const messages = Array.isArray(deskPetScriptsByCondition[nextCondition])
+    ? deskPetScriptsByCondition[nextCondition]
+    : [];
+  const messagePool = messages.length > 1 ? messages.filter((message) => message !== deskPetLastMessage) : messages;
+  const nextMessage = messagePool[Math.floor(Math.random() * messagePool.length)] || "Small break. Big kindness.";
+
+  deskPetLastCondition = nextCondition;
+  deskPetLastMessage = nextMessage;
+
+  return nextMessage;
+}
+
+function clearDeskPetReminderTimer() {
+  window.clearTimeout(deskPetReminderTimer);
+  deskPetReminderTimer = null;
+}
+
+function queueDeskPetReminder(delayMs = 120000) {
+  clearDeskPetReminderTimer();
+
+  if (!deskPetNode || deskPetNode.hidden || document.hidden) {
+    return;
+  }
+
+  deskPetReminderTimer = window.setTimeout(() => {
+    showDeskPetReminder();
+    queueDeskPetReminder(180000);
+  }, delayMs);
+}
+
+function showDeskPetReminder() {
+  if (!deskPetNode || deskPetNode.hidden || document.hidden) {
+    return;
+  }
+
+  animateDeskPetBubble(pickDeskPetScript());
 }
 
 function getWeatherPalette({ icon, temperature, isDay }) {
@@ -380,6 +1283,12 @@ async function loadWeather() {
   }
 
   const weatherLocation = await getDeviceLocation();
+  latestWeatherState = {
+    icon: "cloud",
+    temperature: null,
+    isDay: true,
+    location: weatherLocation.label
+  };
 
   updateWeatherWidget({
     icon: "cloud",
@@ -410,6 +1319,12 @@ async function loadWeather() {
 
     const presentation = getWeatherPresentation(current.weather_code, current.is_day === 1);
     const temperature = Math.round(current.temperature_2m);
+    latestWeatherState = {
+      icon: presentation.icon,
+      temperature,
+      isDay: current.is_day === 1,
+      location: weatherLocation.label
+    };
 
     latestWeatherSummary = `${presentation.label} ${temperature}C in ${weatherLocation.label}.`;
 
@@ -423,6 +1338,12 @@ async function loadWeather() {
     });
   } catch (_error) {
     latestWeatherSummary = `Live weather is unavailable right now for ${weatherLocation.label}.`;
+    latestWeatherState = {
+      icon: "cloud",
+      temperature: null,
+      isDay: true,
+      location: weatherLocation.label
+    };
 
     updateWeatherWidget({
       icon: "cloud",
@@ -455,6 +1376,8 @@ function formatThemeName(themeMode) {
 let currentTheme = getStoredTheme() || "system";
 applyTheme(currentTheme);
 setupWeatherWidget();
+setupDeskPet();
+loadDeskPetScripts();
 
 window.requestAnimationFrame(() => {
   root.classList.add("theme-ready");
@@ -546,7 +1469,7 @@ if (navRight && bellButton && profileButton) {
     { label: "Performance", short: "PM", href: "https://pmp.aml.mobi", desc: "Goals and reviews", external: true },
     { label: "Workspace", short: "WS", href: "workspace.html", desc: "Tasks" },
     { label: "Services", short: "SV", href: "services.html", desc: "Requests" },
-    { label: "Support", short: "SP", href: "support.html", desc: "Help desk" },
+    { label: "Help Desk", short: "HD", href: "services.html#support-help", desc: "Support desk" },
     { label: "Docs", short: "DC", href: "https://docs.google.com", desc: "Files", external: true },
     { label: "Mail", short: "ML", href: "https://mail.google.com", desc: "Inbox", external: true },
     { label: "Calendar", short: "CL", href: "https://calendar.google.com", desc: "Schedule", external: true },
@@ -685,6 +1608,11 @@ if (navRight && bellButton && profileButton) {
 
   document.addEventListener("click", closeMenus);
   document.addEventListener("keydown", (event) => {
+    if (handlePageShortcut(event)) {
+      closeMenus();
+      return;
+    }
+
     if (event.key === "Escape") {
       closeMenus();
     }
@@ -703,14 +1631,22 @@ if (systemThemeMedia) {
   });
 }
 
+if (pageName === "technical") {
+  setupDocumentationPage();
+}
+
+setupPageLayoutManager();
+
 const themeOptions = document.querySelectorAll("[data-theme-option]");
 const themeStatus = document.querySelector("[data-theme-status]");
 const themeCurrentValues = document.querySelectorAll("[data-theme-current]");
 const settingsSwitches = document.querySelectorAll("[data-setting-switch]");
+const resetPortalButton = document.querySelector("[data-reset-portal]");
 const defaultSettings = {
   browserAlerts: true,
   emailDigest: false,
-  productUpdates: true
+  productUpdates: true,
+  deskPet: true
 };
 let currentSettings = {
   ...defaultSettings,
@@ -775,6 +1711,25 @@ function syncSettingSwitches() {
   });
 }
 
+function syncDeskPet() {
+  if (!deskPetNode) {
+    return;
+  }
+
+  const isEnabled = Boolean(currentSettings.deskPet);
+  deskPetNode.hidden = !isEnabled;
+  deskPetNode.classList.toggle("is-paused", document.hidden);
+
+  if (!isEnabled || document.hidden) {
+    deskPetNode.classList.remove("is-wave");
+    window.clearTimeout(deskPetBubbleTimer);
+    clearDeskPetReminderTimer();
+    return;
+  }
+
+  queueDeskPetReminder(90000);
+}
+
 function setSettingValue(settingName, nextValue) {
   if (!(settingName in defaultSettings)) {
     return;
@@ -787,6 +1742,7 @@ function setSettingValue(settingName, nextValue) {
 
   setStoredSettings(currentSettings);
   syncSettingSwitches();
+  syncDeskPet();
 }
 
 themeOptions.forEach((option) => {
@@ -802,6 +1758,7 @@ themeOptions.forEach((option) => {
 
 syncThemeSettings();
 syncSettingSwitches();
+syncDeskPet();
 loadWeather();
 
 settingsSwitches.forEach((button) => {
@@ -814,6 +1771,21 @@ settingsSwitches.forEach((button) => {
     setSettingValue(settingSwitch, !currentSettings[settingSwitch]);
   });
 });
+
+if (resetPortalButton) {
+  resetPortalButton.addEventListener("click", () => {
+    const confirmed = window.confirm(
+      "Reset this portal UI for this browser? This will clear saved theme, settings, section layout, and demo chat data."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    clearPortalStorage();
+    window.location.reload();
+  });
+}
 
 const revealNodes = document.querySelectorAll("[data-reveal]");
 
@@ -839,11 +1811,184 @@ const aiForm = document.querySelector("[data-ai-form]");
 const aiInput = document.querySelector("[data-ai-input]");
 const aiLog = document.querySelector("[data-ai-log]");
 const aiPrompts = document.querySelectorAll("[data-ai-prompt]");
+const publicRoomLog = document.querySelector("[data-public-room-log]");
+const publicRoomForm = document.querySelector("[data-public-room-form]");
+const publicRoomInput = document.querySelector("[data-public-room-input]");
+let aiEffectTimer = null;
+const publicRoomStorageKey = "public_room_messages";
+const publicRoomSeedMessages = [
+  {
+    id: "seed-room-1",
+    text: "Anonymous note: the new homepage feels much calmer after the animation cleanup.",
+    createdAt: "2026-03-15T08:30:00.000Z",
+    own: false
+  },
+  {
+    id: "seed-room-2",
+    text: "Anonymous idea: a quiet room like this is useful for honest suggestions without pressure.",
+    createdAt: "2026-03-15T09:10:00.000Z",
+    own: false
+  },
+  {
+    id: "seed-room-3",
+    text: "Anonymous feedback: the light mode texture is much nicer now on mobile too.",
+    createdAt: "2026-03-15T10:00:00.000Z",
+    own: false
+  }
+];
 
 const aiFallback = "I can help with leave, tickets, policy, approvals, and workspace tips.";
 
+function getStoredPublicRoomMessages() {
+  try {
+    const stored = window.localStorage.getItem(publicRoomStorageKey);
+    if (!stored) {
+      return publicRoomSeedMessages;
+    }
+
+    const parsed = JSON.parse(stored);
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+  } catch (_error) {
+    return publicRoomSeedMessages;
+  }
+
+  return publicRoomSeedMessages;
+}
+
+function setStoredPublicRoomMessages(messages) {
+  try {
+    window.localStorage.setItem(publicRoomStorageKey, JSON.stringify(messages));
+  } catch (_error) {
+    // Ignore storage write failures.
+  }
+}
+
+function formatPublicRoomTime(timestamp) {
+  try {
+    return new Date(timestamp).toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    });
+  } catch (_error) {
+    return "Just now";
+  }
+}
+
+function renderPublicRoomMessages(messages) {
+  if (!publicRoomLog) {
+    return;
+  }
+
+  publicRoomLog.innerHTML = "";
+
+  messages.forEach((message) => {
+    const bubble = document.createElement("article");
+    bubble.className = `public-room-msg ${message.own ? "self" : "other"}`;
+    bubble.innerHTML = `
+      <div class="public-room-meta">
+        <strong>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0z"/><path d="M3.5 12h17M12 3.5c2.2 2.1 3.5 5.1 3.5 8.5S14.2 18.4 12 20.5M12 3.5C9.8 5.6 8.5 8.6 8.5 12s1.3 6.4 3.5 8.5"/></svg>
+          Anonymous
+        </strong>
+        <span>${formatPublicRoomTime(message.createdAt)}</span>
+      </div>
+      <p></p>
+    `;
+    const content = bubble.querySelector("p");
+    if (content) {
+      content.textContent = message.text;
+    }
+    publicRoomLog.appendChild(bubble);
+  });
+
+  publicRoomLog.scrollTop = publicRoomLog.scrollHeight;
+}
+
+if (publicRoomLog && publicRoomForm && publicRoomInput) {
+  let publicRoomMessages = getStoredPublicRoomMessages();
+  renderPublicRoomMessages(publicRoomMessages);
+
+  publicRoomForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const text = publicRoomInput.value.trim();
+    if (!text) {
+      return;
+    }
+
+    publicRoomMessages = [
+      ...publicRoomMessages,
+      {
+        id: `room-${Date.now()}`,
+        text,
+        createdAt: new Date().toISOString(),
+        own: true
+      }
+    ].slice(-40);
+
+    setStoredPublicRoomMessages(publicRoomMessages);
+    renderPublicRoomMessages(publicRoomMessages);
+    publicRoomInput.value = "";
+    publicRoomInput.focus();
+  });
+}
+
+function getAiEffect(text) {
+  const value = text.toLowerCase();
+
+  if (value.includes("--rotate--")) {
+    return "rotate";
+  }
+
+  if (value.includes("--drop--")) {
+    return "drop";
+  }
+
+  if (value.includes("--space--")) {
+    return "space";
+  }
+
+  return null;
+}
+
+function triggerAiEffect(effectName) {
+  let effectClass = "ai-effect-rotate";
+  let effectDuration = 1400;
+
+  if (effectName === "drop") {
+    effectClass = "ai-effect-drop";
+    effectDuration = 1700;
+  } else if (effectName === "space") {
+    effectClass = "ai-effect-space";
+    effectDuration = 2200;
+  }
+
+  document.body.classList.remove("ai-effect-rotate", "ai-effect-drop", "ai-effect-space");
+  void document.body.offsetWidth;
+  document.body.classList.add(effectClass);
+
+  window.clearTimeout(aiEffectTimer);
+  aiEffectTimer = window.setTimeout(() => {
+    document.body.classList.remove(effectClass);
+  }, effectDuration);
+}
+
 function getAiReply(text) {
   const value = text.toLowerCase();
+
+  if (value.includes("--rotate--")) {
+    return "Portal spin engaged.";
+  }
+
+  if (value.includes("--drop--")) {
+    return "Gravity mode enabled.";
+  }
+
+  if (value.includes("--space--")) {
+    return "Orbit mode engaged.";
+  }
 
   if (value.includes("leave")) {
     return "Open Services > HR > Leave Request, choose type, dates, and submit.";
@@ -890,9 +2035,15 @@ function askAi(text) {
     return;
   }
 
+  const aiEffect = getAiEffect(question);
+
   addAiMessage(question, "user");
 
   window.setTimeout(() => {
+    if (aiEffect) {
+      triggerAiEffect(aiEffect);
+    }
+
     addAiMessage(getAiReply(question), "bot");
   }, 260);
 }

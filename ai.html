@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATOM | AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="ai">
+  <header class="topbar" id="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="ATOM home">
+        <img class="brand-logo" src="assets/logo.png" alt="ATOM" />
+      </a>
+      <div class="nav-actions">
+        <nav class="nav-links" aria-label="Main">
+          <a data-link="home" href="index.html">Home</a>
+          <a data-link="workspace" href="workspace.html">Workspace</a>
+          <a data-link="services" href="services.html">Services</a>
+        </nav>
+        <div class="nav-right" aria-label="Account">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17H9m9-1v-4a6 6 0 1 0-12 0v4l-2 2h16l-2-2z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+            <span class="icon-badge" aria-hidden="true"></span>
+          </button>
+          <button class="profile-chip" type="button" aria-label="Profile">
+            <span class="profile-avatar">AM</span>
+            <span class="profile-name">Aye Min</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner hero-grid" data-reveal>
+        <div>
+          <p class="eyebrow">AI Assistant</p>
+          <h1>Ask without leaving the portal.</h1>
+          <p class="lead">A dedicated assistant page for leave flow, tickets, approvals, policies, weather, and quick portal help.</p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="#ai-assistant">Open Chat</a>
+            <a class="btn btn-ghost" href="index.html">Back Home</a>
+          </div>
+        </div>
+        <div class="hero-visual" data-reveal>
+          <img src="assets/hero-support.svg" alt="AI assistant illustration" />
+          <span class="float-chip top">Full Chat</span>
+          <span class="float-chip bottom">Portal Help</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-priority" data-reveal id="ai-assistant">
+      <div class="container">
+        <h2>AML Assistant</h2>
+        <p class="section-note">Use this page when you want a larger AI chat area instead of the compact home-page widget.</p>
+        <div class="ai-demo ai-demo-expanded">
+          <div class="ai-layout">
+            <div class="ai-side">
+              <p>Ask about leave, tickets, approvals, policy search, weather, or try the fun commands too.</p>
+              <div class="prompt-row">
+                <button class="prompt-btn" data-ai-prompt="How do I submit leave?">Leave flow</button>
+                <button class="prompt-btn" data-ai-prompt="What is my ticket status?">Ticket status</button>
+                <button class="prompt-btn" data-ai-prompt="Show policy update.">Policy update</button>
+                <button class="prompt-btn" data-ai-prompt="Any approvals pending?">Approvals</button>
+                <button class="prompt-btn" data-ai-prompt="What is the weather now?">Weather</button>
+                <button class="prompt-btn" data-ai-prompt="--space--">Space mode</button>
+              </div>
+              <div class="doc-note ai-note">
+                <strong>Current scope</strong>
+                <p>This assistant is still a frontend demo. It responds using shared client-side logic and portal state rather than a live backend AI service.</p>
+              </div>
+            </div>
+            <div class="ai-chat ai-chat-expanded">
+              <div class="ai-log ai-log-expanded" data-ai-log>
+                <div class="ai-msg bot">Hi, I am AML Assistant. Ask anything about your workspace.</div>
+              </div>
+              <form class="ai-form" data-ai-form>
+                <input data-ai-input type="text" placeholder="Ask AML Assistant..." />
+                <button type="submit">Ask</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>ATOM Workspace</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="faq.html">FAQ</a>
+        <a href="technical.html">Documentation</a>
+        <a href="version.html">Version</a>
+        <a href="legal.html">Legal</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
