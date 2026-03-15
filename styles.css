@@ -213,7 +213,7 @@ p {
 .brand-logo {
   display: block;
   width: auto;
-  height: 34px;
+  height: 24px;
 }
 
 .nav-links {
@@ -1815,6 +1815,10 @@ h2 {
 }
 
 @media (max-width: 680px) {
+  .brand-logo {
+    height: 20px;
+  }
+
   .container {
     width: min(var(--max), calc(100% - 1.2rem));
   }
