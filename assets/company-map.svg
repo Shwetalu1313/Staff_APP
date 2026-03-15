@@ -1,0 +1,62 @@
+﻿<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="180" y1="80" x2="1220" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5FAFF"/>
+      <stop offset="1" stop-color="#E8F2FC"/>
+    </linearGradient>
+    <linearGradient id="land" x1="280" y1="220" x2="1080" y2="680" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DCECFB"/>
+      <stop offset="1" stop-color="#C8E0F5"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <g opacity="0.5">
+    <path d="M180 220H1220" stroke="#D6E6F5"/>
+    <path d="M180 340H1220" stroke="#D6E6F5"/>
+    <path d="M180 460H1220" stroke="#D6E6F5"/>
+    <path d="M180 580H1220" stroke="#D6E6F5"/>
+    <path d="M180 700H1220" stroke="#D6E6F5"/>
+    <path d="M280 140V760" stroke="#D6E6F5"/>
+    <path d="M470 140V760" stroke="#D6E6F5"/>
+    <path d="M660 140V760" stroke="#D6E6F5"/>
+    <path d="M850 140V760" stroke="#D6E6F5"/>
+    <path d="M1040 140V760" stroke="#D6E6F5"/>
+  </g>
+
+  <path d="M360 640C300 580 290 520 310 460C330 390 390 350 450 330C520 308 600 320 660 280C730 232 810 220 900 250C980 276 1050 344 1060 430C1072 522 1000 612 910 652C830 688 730 690 648 654C588 628 530 622 470 646C430 662 390 664 360 640Z" fill="url(#land)" stroke="#A9C8E6" stroke-width="4"/>
+
+  <g stroke="#7FA8CF" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 10" opacity="0.7">
+    <path d="M420 560L560 500L690 530L860 460L980 500"/>
+    <path d="M560 500L600 370L760 330"/>
+    <path d="M690 530L760 650L900 620"/>
+  </g>
+
+  <g>
+    <circle cx="420" cy="560" r="20" fill="#7CA9D4"/>
+    <circle cx="560" cy="500" r="20" fill="#6FB99E"/>
+    <circle cx="690" cy="530" r="20" fill="#C69264"/>
+    <circle cx="860" cy="460" r="20" fill="#7A88C8"/>
+    <circle cx="980" cy="500" r="20" fill="#7CA9D4"/>
+    <circle cx="760" cy="330" r="20" fill="#6FB99E"/>
+    <circle cx="900" cy="620" r="20" fill="#C69264"/>
+
+    <circle cx="420" cy="560" r="8" fill="#FFFFFF"/>
+    <circle cx="560" cy="500" r="8" fill="#FFFFFF"/>
+    <circle cx="690" cy="530" r="8" fill="#FFFFFF"/>
+    <circle cx="860" cy="460" r="8" fill="#FFFFFF"/>
+    <circle cx="980" cy="500" r="8" fill="#FFFFFF"/>
+    <circle cx="760" cy="330" r="8" fill="#FFFFFF"/>
+    <circle cx="900" cy="620" r="8" fill="#FFFFFF"/>
+  </g>
+
+  <g fill="#5A7FA4" font-family="Manrope, sans-serif" font-size="28" font-weight="700">
+    <text x="382" y="610">Yangon</text>
+    <text x="520" y="470">Bago</text>
+    <text x="650" y="500">Nay Pyi Taw</text>
+    <text x="820" y="430">Mandalay</text>
+    <text x="940" y="470">Pyin Oo Lwin</text>
+    <text x="708" y="300">Monywa</text>
+    <text x="855" y="592">Taunggyi</text>
+  </g>
+</svg>

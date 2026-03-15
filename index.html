@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATOM | Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="home">
+  <header class="topbar" id="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="ATOM home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>ATOM</span>
+      </a>
+      <div class="nav-actions">
+        <nav class="nav-links" aria-label="Main">
+          <a data-link="home" href="index.html">Welcome</a>
+          <a data-link="services" href="services.html">Services</a>
+          <a data-link="workspace" href="workspace.html">Workspace</a>
+          <a data-link="apps" href="apps.html">Apps</a>
+          <a data-link="support" href="support.html">Support</a>
+        </nav>
+        <div class="nav-right" aria-label="Account">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17H9m9-1v-4a6 6 0 1 0-12 0v4l-2 2h16l-2-2z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+            <span class="icon-badge" aria-hidden="true"></span>
+          </button>
+          <button class="profile-chip" type="button" aria-label="Profile">
+            <span class="profile-avatar">AM</span>
+            <span class="profile-name">Aye Min</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner hero-grid" data-reveal>
+        <div>
+          <p class="eyebrow">AML Employee Platform</p>
+          <h1>Work with clarity.</h1>
+          <p class="lead">Faster tools. Better flow. Less noise.</p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="workspace.html">Open Workspace</a>
+            <a class="btn btn-ghost" href="services.html">View Services</a>
+          </div>
+        </div>
+        <div class="hero-visual" data-reveal>
+          <img src="assets/hero-welcome.svg" alt="AML premium workspace illustration" />
+          <span class="float-chip top">Live 92%</span>
+          <span class="float-chip bottom">12 Tasks</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-priority" data-reveal>
+      <div class="container">
+        <h2>Ask AI Demo</h2>
+        <p class="section-note">Quick assistant for common staff tasks and policy guidance.</p>
+        <div class="ai-demo">
+          <div class="ai-layout">
+            <div class="ai-side">
+              <p>Try a quick question about leave, tickets, policies, or approvals.</p>
+              <div class="prompt-row">
+                <button class="prompt-btn" data-ai-prompt="How do I submit leave?">Leave flow</button>
+                <button class="prompt-btn" data-ai-prompt="What is my ticket status?">Ticket status</button>
+                <button class="prompt-btn" data-ai-prompt="Show policy update.">Policy update</button>
+                <button class="prompt-btn" data-ai-prompt="Any approvals pending?">Approvals</button>
+              </div>
+            </div>
+            <div class="ai-chat">
+              <div class="ai-log" data-ai-log>
+                <div class="ai-msg bot">Hi, I am AML Assistant. Ask anything about your workspace.</div>
+              </div>
+              <form class="ai-form" data-ai-form>
+                <input data-ai-input type="text" placeholder="Ask AML Assistant..." />
+                <button type="submit">Ask</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-standard" data-reveal>
+      <div class="container">
+        <h2>Start Here</h2>
+        <p class="section-note">One clear daily path: open workspace, complete priority actions, then launch tools.</p>
+        <div class="start-grid">
+          <article class="card start-card tilt">
+            <div class="icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 12h8M12 8v8"/></svg>
+            </div>
+            <h3>Primary Path</h3>
+            <p>Open your day in Workspace, then track approvals and tickets.</p>
+            <div class="card-actions">
+              <a class="btn btn-light" href="workspace.html">Go Workspace</a>
+              <a class="btn btn-ghost" href="services.html">Open Services</a>
+            </div>
+          </article>
+          <article class="card tilt">
+            <div class="icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+            </div>
+            <h3>Today Snapshot</h3>
+            <p>Sunny 24C | 12 approvals | 2 company updates.</p>
+          </article>
+        </div>
+        <div class="chips section-offset-sm">
+          <span class="chip">
+            <svg viewBox="0 0 24 24"><path d="M4 12h16M12 4v16"/></svg>
+            Apps
+          </span>
+          <span class="chip">
+            <svg viewBox="0 0 24 24"><path d="M8 4v4M16 4v4M4 10h16M5 7h14v13H5z"/></svg>
+            Leave
+          </span>
+          <span class="chip">
+            <svg viewBox="0 0 24 24"><path d="M3 7h18v10H3zM7 11h4"/></svg>
+            Tickets
+          </span>
+          <span class="chip">
+            <svg viewBox="0 0 24 24"><path d="M4 19h16M7 15V9M12 15V5M17 15v-3"/></svg>
+            News
+          </span>
+          <span class="chip">
+            <svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6zM9 12h6"/></svg>
+            Policy
+          </span>
+          <span class="chip">
+            <svg viewBox="0 0 24 24"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM5 20a7 7 0 0 1 14 0"/></svg>
+            People
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-standard" data-reveal>
+      <div class="container">
+        <h2>Company Pulse</h2>
+        <p class="section-note">Latest internal updates and upcoming activities from across the company.</p>
+        <div class="pulse-grid">
+          <article class="card pulse-card tilt">
+            <div class="icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+            </div>
+            <h3>Company News</h3>
+            <ul class="pulse-list">
+              <li><strong>5G core upgrade completed</strong><span>Mandalay region now on the new core stack.</span></li>
+              <li><strong>Q2 customer growth report</strong><span>Enterprise subscriptions increased by 11%.</span></li>
+              <li><strong>Digital onboarding rollout</strong><span>All branches moved to paperless onboarding.</span></li>
+            </ul>
+          </article>
+          <article class="card pulse-card tilt">
+            <div class="icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M8 4v4M16 4v4M4 10h16M5 7h14v13H5z"/></svg>
+            </div>
+            <h3>Company Events</h3>
+            <ul class="pulse-list">
+              <li><strong>Townhall Meeting</strong><span>Friday, 3:00 PM at HQ and livestream.</span></li>
+              <li><strong>Engineering Demo Day</strong><span>New internal tools showcase next Tuesday.</span></li>
+              <li><strong>Wellness Week</strong><span>Health sessions and team activities all week.</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>ATOM Workspace</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

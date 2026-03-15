@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATOM | Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="workspace">
+  <header class="topbar" id="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="ATOM home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>ATOM</span>
+      </a>
+      <div class="nav-actions">
+        <nav class="nav-links" aria-label="Main">
+          <a data-link="home" href="index.html">Welcome</a>
+          <a data-link="services" href="services.html">Services</a>
+          <a data-link="workspace" href="workspace.html">Workspace</a>
+          <a data-link="apps" href="apps.html">Apps</a>
+          <a data-link="support" href="support.html">Support</a>
+        </nav>
+        <div class="nav-right" aria-label="Account">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17H9m9-1v-4a6 6 0 1 0-12 0v4l-2 2h16l-2-2z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+            <span class="icon-badge" aria-hidden="true"></span>
+          </button>
+          <button class="profile-chip" type="button" aria-label="Profile">
+            <span class="profile-avatar">AM</span>
+            <span class="profile-name">Aye Min</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner hero-grid" data-reveal>
+        <div>
+          <p class="eyebrow">Personal Workspace</p>
+          <h1>Top tasks first.</h1>
+          <p class="lead">Your day, focused.</p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="workspace.html">Open Board</a>
+            <a class="btn btn-ghost" href="services.html">Request Service</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img src="assets/hero-workspace.svg" alt="Workspace hero illustration" />
+          <span class="float-chip top">Score 3.8</span>
+          <span class="float-chip bottom">Queue 12</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-priority" data-reveal>
+      <div class="container">
+        <h2>My Queue</h2>
+        <p class="section-note">Top workload indicators for approvals, tickets, tasks, and recognition.</p>
+        <div class="grid cards-4">
+          <article class="card tilt"><div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><h3>Approvals</h3><p>12 pending</p></article>
+          <article class="card tilt"><div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M3 7h18v10H3zM7 11h4"/></svg></div><h3>Tickets</h3><p>12 open</p></article>
+          <article class="card tilt"><div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/></svg></div><h3>Tasks</h3><p>12 active</p></article>
+          <article class="card tilt"><div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 4l2.5 5 5.5.8-4 4 .9 5.7-4.9-2.6-4.9 2.6.9-5.7-4-4 5.5-.8z"/></svg></div><h3>Kudos</h3><p>3 new</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-standard" data-reveal>
+      <div class="container media-grid">
+        <article class="panel">
+          <h2>Performance</h2>
+          <p class="section-note">Current score trend and review focus for this cycle.</p>
+          <p>Score 3.8 | Review this week</p>
+          <div class="meter">
+            <div><span style="width: 78%;"></span></div>
+            <div><span style="width: 64%;"></span></div>
+            <div><span style="width: 86%;"></span></div>
+          </div>
+        </article>
+        <article class="media-card">
+          <img src="assets/hero-workspace.svg" alt="Workspace snapshot illustration" />
+          <div class="media-copy">
+            <h3>Live Board</h3>
+            <p>Track approvals and tickets instantly</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>ATOM Workspace</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
+

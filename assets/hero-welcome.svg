@@ -1,0 +1,76 @@
+﻿<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="40" x2="1280" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#022F6B"/>
+      <stop offset="0.55" stop-color="#065EB0"/>
+      <stop offset="1" stop-color="#0BADE6"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.08"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(260 180) rotate(34) scale(420 260)">
+      <stop stop-color="#67F0D4" stop-opacity="0.62"/>
+      <stop offset="1" stop-color="#67F0D4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1160 120) rotate(140) scale(340 220)">
+      <stop stop-color="#FFFFFF" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="0" y="0" width="1400" height="900" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <ellipse cx="260" cy="180" rx="420" ry="260" fill="url(#glowA)"/>
+  <ellipse cx="1160" cy="120" rx="340" ry="220" fill="url(#glowB)"/>
+
+  <g opacity="0.32">
+    <path d="M80 130H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M80 220H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M80 310H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M80 400H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M80 490H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M80 580H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M80 670H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M80 760H1320" stroke="#DDF4FF" stroke-opacity="0.24"/>
+    <path d="M140 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+    <path d="M300 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+    <path d="M460 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+    <path d="M620 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+    <path d="M780 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+    <path d="M940 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+    <path d="M1100 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+    <path d="M1260 80V820" stroke="#DDF4FF" stroke-opacity="0.2"/>
+  </g>
+
+  <g filter="url(#blur)" opacity="0.36">
+    <circle cx="430" cy="640" r="110" fill="#1CD9FF"/>
+    <circle cx="930" cy="630" r="130" fill="#9DFCF0"/>
+  </g>
+
+  <g>
+    <rect x="180" y="210" width="1040" height="500" rx="34" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.36"/>
+    <rect x="235" y="270" width="540" height="110" rx="18" fill="#FFFFFF" fill-opacity="0.22"/>
+    <rect x="235" y="410" width="250" height="240" rx="20" fill="#FFFFFF" fill-opacity="0.2"/>
+    <rect x="515" y="410" width="260" height="240" rx="20" fill="#FFFFFF" fill-opacity="0.17"/>
+    <rect x="815" y="270" width="350" height="380" rx="22" fill="#FFFFFF" fill-opacity="0.2"/>
+
+    <rect x="265" y="304" width="210" height="16" rx="8" fill="#DFF4FF" fill-opacity="0.9"/>
+    <rect x="265" y="336" width="340" height="12" rx="6" fill="#DFF4FF" fill-opacity="0.65"/>
+
+    <circle cx="302" cy="465" r="26" fill="#7AF3DB" fill-opacity="0.9"/>
+    <rect x="340" y="454" width="108" height="12" rx="6" fill="#E5F7FF" fill-opacity="0.8"/>
+    <rect x="340" y="476" width="85" height="10" rx="5" fill="#E5F7FF" fill-opacity="0.5"/>
+
+    <circle cx="582" cy="465" r="26" fill="#7CD3FF" fill-opacity="0.95"/>
+    <rect x="620" y="454" width="120" height="12" rx="6" fill="#E5F7FF" fill-opacity="0.8"/>
+    <rect x="620" y="476" width="92" height="10" rx="5" fill="#E5F7FF" fill-opacity="0.5"/>
+
+    <path d="M850 570C900 520 930 520 980 570C1030 620 1065 620 1115 570" stroke="#A6F9E8" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="850" cy="570" r="12" fill="#E8FBFF"/>
+    <circle cx="980" cy="570" r="12" fill="#E8FBFF"/>
+    <circle cx="1115" cy="570" r="12" fill="#E8FBFF"/>
+  </g>
+</svg>
