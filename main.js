@@ -31,6 +31,9 @@ if (topbar) {
 
 const pageName = document.body.dataset.page;
 const navLinks = document.querySelectorAll("[data-link]");
+const activeNavKeyByPage = {
+  technical: "documentation"
+};
 const themeStorageKey = "staff_theme";
 const settingsStorageKey = "staff_settings";
 const themeModes = ["light", "dark", "system"];
@@ -1384,7 +1387,8 @@ window.requestAnimationFrame(() => {
 });
 
 navLinks.forEach((link) => {
-  if (link.dataset.link === pageName) {
+  const activeNavKey = activeNavKeyByPage[pageName] || pageName;
+  if (link.dataset.link === activeNavKey) {
     link.classList.add("active");
   }
 });
