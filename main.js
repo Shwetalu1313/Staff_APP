@@ -49,6 +49,8 @@ let weatherWidgetIconNode = null;
 let weatherWidgetStatusNode = null;
 let weatherWidgetLocationNode = null;
 let weatherWidgetMetaNode = null;
+let weatherTriggerNode = null;
+let weatherPopoverIconNode = null;
 let latestWeatherSummary = "Weather data is loading for Yangon.";
 
 function getStoredTheme() {
@@ -132,24 +134,106 @@ function setupWeatherWidget() {
 
   brandGroup.appendChild(weatherWidget);
 
+  weatherTriggerNode = weatherWidget.querySelector(".weather-trigger");
   weatherWidgetIconNode = weatherWidget.querySelector("[data-nav-weather-icon]");
+  weatherPopoverIconNode = weatherWidget.querySelector("[data-nav-weather-panel-icon]");
   weatherWidgetStatusNode = weatherWidget.querySelector("[data-nav-weather-status]");
   weatherWidgetLocationNode = weatherWidget.querySelector("[data-nav-weather-location]");
   weatherWidgetMetaNode = weatherWidget.querySelector("[data-nav-weather-meta]");
 }
 
-function updateWeatherWidget({ icon, status, location, meta }) {
-  if (weatherWidgetIconNode) {
-    weatherWidgetIconNode.innerHTML = weatherIconSvg(icon);
+function getWeatherPalette({ icon, temperature, isDay }) {
+  if (icon === "storm") {
+    return {
+      accent: "#7a56d6",
+      border: "rgba(122, 86, 214, 0.34)",
+      triggerBackground: "linear-gradient(145deg, rgba(244, 238, 255, 0.98), rgba(231, 225, 255, 0.94))",
+      iconBackground: "linear-gradient(145deg, rgba(237, 229, 255, 0.96), rgba(251, 247, 255, 0.98))"
+    };
   }
 
-  const popoverIconNode = document.querySelector("[data-nav-weather-panel-icon]");
-  if (popoverIconNode) {
-    popoverIconNode.innerHTML = weatherIconSvg(icon);
+  if (icon === "rain" || icon === "fog") {
+    return {
+      accent: "#2f7de1",
+      border: "rgba(47, 125, 225, 0.3)",
+      triggerBackground: "linear-gradient(145deg, rgba(235, 244, 255, 0.98), rgba(225, 239, 255, 0.94))",
+      iconBackground: "linear-gradient(145deg, rgba(229, 241, 255, 0.96), rgba(248, 251, 255, 0.98))"
+    };
+  }
+
+  if (icon === "moon") {
+    return {
+      accent: "#5f6fd6",
+      border: "rgba(95, 111, 214, 0.34)",
+      triggerBackground: "linear-gradient(145deg, rgba(238, 241, 255, 0.98), rgba(229, 233, 255, 0.94))",
+      iconBackground: "linear-gradient(145deg, rgba(231, 236, 255, 0.96), rgba(248, 249, 255, 0.98))"
+    };
+  }
+
+  if (typeof temperature === "number") {
+    if (temperature >= 35) {
+      return {
+        accent: "#e25555",
+        border: "rgba(226, 85, 85, 0.32)",
+        triggerBackground: "linear-gradient(145deg, rgba(255, 241, 236, 0.98), rgba(255, 232, 222, 0.94))",
+        iconBackground: "linear-gradient(145deg, rgba(255, 236, 229, 0.96), rgba(255, 249, 247, 0.98))"
+      };
+    }
+
+    if (temperature >= 29) {
+      return {
+        accent: "#d8891a",
+        border: "rgba(216, 137, 26, 0.32)",
+        triggerBackground: "linear-gradient(145deg, rgba(255, 248, 234, 0.98), rgba(255, 238, 214, 0.94))",
+        iconBackground: "linear-gradient(145deg, rgba(255, 242, 218, 0.96), rgba(255, 251, 244, 0.98))"
+      };
+    }
+
+    if (temperature <= 18) {
+      return {
+        accent: "#2f7de1",
+        border: "rgba(47, 125, 225, 0.3)",
+        triggerBackground: "linear-gradient(145deg, rgba(236, 246, 255, 0.98), rgba(225, 239, 255, 0.94))",
+        iconBackground: "linear-gradient(145deg, rgba(229, 241, 255, 0.96), rgba(248, 251, 255, 0.98))"
+      };
+    }
+  }
+
+  if (icon === "sun" || isDay) {
+    return {
+      accent: "#cf8c00",
+      border: "rgba(207, 140, 0, 0.3)",
+      triggerBackground: "linear-gradient(145deg, rgba(255, 250, 236, 0.98), rgba(255, 241, 218, 0.94))",
+      iconBackground: "linear-gradient(145deg, rgba(255, 245, 222, 0.96), rgba(255, 252, 244, 0.98))"
+    };
+  }
+
+  return {
+    accent: "#4f79a0",
+    border: "rgba(79, 121, 160, 0.28)",
+    triggerBackground: "linear-gradient(145deg, rgba(242, 247, 252, 0.98), rgba(233, 241, 249, 0.94))",
+    iconBackground: "linear-gradient(145deg, rgba(236, 243, 250, 0.96), rgba(250, 252, 255, 0.98))"
+  };
+}
+
+function updateWeatherWidget({ icon, status, location, meta, temperature, isDay }) {
+  const palette = getWeatherPalette({ icon, temperature, isDay });
+
+  if (weatherWidgetIconNode) {
+    weatherWidgetIconNode.innerHTML = weatherIconSvg(icon);
+    weatherWidgetIconNode.style.color = palette.accent;
+  }
+
+  if (weatherPopoverIconNode) {
+    weatherPopoverIconNode.innerHTML = weatherIconSvg(icon);
+    weatherPopoverIconNode.style.color = palette.accent;
+    weatherPopoverIconNode.style.background = palette.iconBackground;
+    weatherPopoverIconNode.style.borderColor = palette.border;
   }
 
   if (weatherWidgetStatusNode) {
     weatherWidgetStatusNode.textContent = status;
+    weatherWidgetStatusNode.style.color = palette.accent;
   }
 
   if (weatherWidgetLocationNode) {
@@ -158,6 +242,12 @@ function updateWeatherWidget({ icon, status, location, meta }) {
 
   if (weatherWidgetMetaNode) {
     weatherWidgetMetaNode.textContent = meta;
+  }
+
+  if (weatherTriggerNode) {
+    weatherTriggerNode.style.color = palette.accent;
+    weatherTriggerNode.style.borderColor = palette.border;
+    weatherTriggerNode.style.background = palette.triggerBackground;
   }
 }
 
@@ -327,7 +417,9 @@ async function loadWeather() {
       icon: presentation.icon,
       status: `${presentation.label} ${temperature}C`,
       location: weatherLocation.label,
-      meta: weatherLocation.meta
+      meta: weatherLocation.meta,
+      temperature,
+      isDay: current.is_day === 1
     });
   } catch (_error) {
     latestWeatherSummary = `Live weather is unavailable right now for ${weatherLocation.label}.`;
