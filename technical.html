@@ -20,6 +20,7 @@
           <a data-link="home" href="index.html">Home</a>
           <a data-link="workspace" href="workspace.html">Workspace</a>
           <a data-link="services" href="services.html">Services</a>
+          <a data-link="documentation" href="technical.html">Documentation</a>
         </nav>
         <div class="nav-right" aria-label="Account">
           <button class="icon-btn" type="button" aria-label="Notifications">
@@ -52,7 +53,11 @@
             <button type="button" class="docs-topic" data-doc-topic="doc-navigation">Navigation</button>
             <button type="button" class="docs-topic" data-doc-topic="doc-features">Interactive Features</button>
             <button type="button" class="docs-topic" data-doc-topic="doc-storage">Storage and Data</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-ui-guide">UI Class Guide</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-javascript">JavaScript Guide</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-css">CSS Guide</button>
             <button type="button" class="docs-topic" data-doc-topic="doc-backend">Backend Migration</button>
+            <button type="button" class="docs-topic" data-doc-topic="doc-roadmap">Dynamic Roadmap</button>
             <button type="button" class="docs-topic" data-doc-topic="doc-design">Design System</button>
             <button type="button" class="docs-topic" data-doc-topic="doc-palette">Color Palette</button>
             <button type="button" class="docs-topic" data-doc-topic="doc-quality">Quality and Risks</button>
@@ -70,7 +75,7 @@
               <p class="eyebrow">System</p>
               <h2>Current architecture overview</h2>
             </div>
-            <p>This portal is currently a static multi-page web application. Each page is served as plain HTML, shares a common stylesheet in <code>styles.css</code>, and relies on a single shared script in <code>main.js</code> for navigation behavior, widgets, theme handling, interactive demos, and browser-local state.</p>
+            <p>Current model: static HTML pages + one shared stylesheet + one shared script + browser-local state.</p>
             <div class="doc-stat-grid">
               <article class="doc-stat">
                 <strong>11</strong>
@@ -87,6 +92,24 @@
               <article class="doc-stat">
                 <strong>5</strong>
                 <span>Footer links</span>
+              </article>
+            </div>
+            <div class="doc-flow" aria-label="Current architecture flow">
+              <article class="doc-flow-card">
+                <strong>HTML pages</strong>
+                <span>Page structure and content</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>styles.css</strong>
+                <span>Theme, layout, components</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>main.js</strong>
+                <span>Shared interactions and widgets</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>localStorage</strong>
+                <span>Theme, settings, layout, demo chat</span>
               </article>
             </div>
             <div class="doc-grid-2">
@@ -261,6 +284,262 @@
             </div>
           </section>
 
+          <section id="doc-ui-guide" class="doc-section panel" data-doc-section data-doc-title="UI Class Guide" data-doc-keywords="developer ui classes buttons forms cards panels chips badges section classes html components">
+            <div class="doc-heading">
+              <p class="eyebrow">Developer UI</p>
+              <h2>Reusable classes for buttons, forms, cards, and layout</h2>
+            </div>
+            <p>Use existing classes first. The goal is consistency, not one more custom pattern.</p>
+            <div class="doc-steps" aria-label="How to use shared UI classes">
+              <article class="doc-step">
+                <strong>1. Pick the surface</strong>
+                <span>Start with <code>panel</code> for the container.</span>
+              </article>
+              <article class="doc-step">
+                <strong>2. Pick the layout</strong>
+                <span>Use <code>container</code>, <code>section</code>, or grid helpers like <code>cards-2</code>.</span>
+              </article>
+              <article class="doc-step">
+                <strong>3. Pick the action style</strong>
+                <span>Use <code>btn</code>, <code>icon-btn</code>, or chips based on priority.</span>
+              </article>
+              <article class="doc-step">
+                <strong>4. Keep labels visible</strong>
+                <span>Buttons, forms, and switches still need clear text or accessible names.</span>
+              </article>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Page and layout classes</h3>
+                <ul class="doc-list">
+                  <li><code>section</code> and <code>section-standard</code> create the normal vertical rhythm used across pages.</li>
+                  <li><code>container</code> keeps content width aligned with the header and footer.</li>
+                  <li><code>panel</code> is the primary surface wrapper for cards, content blocks, chat panels, settings groups, and docs modules.</li>
+                  <li><code>cards-2</code>, <code>cards-3</code>, and related grid helpers should be reused before introducing a custom grid.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Action and status classes</h3>
+                <ul class="doc-list">
+                  <li><code>btn</code> is the main action pattern. Use modifiers that already exist before creating a new button visual.</li>
+                  <li><code>icon-btn</code> is for compact circular icon actions in the header and utility areas.</li>
+                  <li><code>chip</code>, <code>profile-chip</code>, and similar compact pills work for small contextual metadata rather than primary actions.</li>
+                  <li><code>icon-badge</code> and count badges should only appear when there is meaningful state. Avoid showing <code>0</code> when nothing needs attention.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Form classes</h3>
+                <ul class="doc-list">
+                  <li><code>settings-option</code>, switch wrappers, and labeled control rows should be reused for preference forms.</li>
+                  <li>Inputs should stay paired with visible labels or accessible names even when the UI is visually compact.</li>
+                  <li>Keep submit actions attached to the field group they control. Do not place unrelated actions inside the same form row.</li>
+                  <li>For future dynamic forms, introduce validation message classes once backend validation rules are defined.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Content block classes</h3>
+                <ul class="doc-list">
+                  <li><code>doc-card</code>, <code>doc-table</code>, and <code>doc-row</code> already support documentation-style content.</li>
+                  <li>Chat surfaces should preserve message-group structure rather than mixing generic cards and chat bubbles.</li>
+                  <li>Feature-specific surfaces such as weather, AI, and pets should remain isolated in their own wrappers so styles do not leak into global card rules.</li>
+                </ul>
+              </article>
+            </div>
+            <div class="doc-mini-grid">
+              <article class="doc-mini-card">
+                <strong>Use this for a button</strong>
+                <code>btn</code> for primary action
+              </article>
+              <article class="doc-mini-card">
+                <strong>Use this for an icon action</strong>
+                <code>icon-btn</code> in tight spaces
+              </article>
+              <article class="doc-mini-card">
+                <strong>Use this for a card</strong>
+                <code>panel</code> as the main surface
+              </article>
+              <article class="doc-mini-card">
+                <strong>Use this for a form row</strong>
+                <code>settings-option</code> or a labeled row
+              </article>
+            </div>
+            <div class="doc-code">
+<pre><code>&lt;section class="section section-standard"&gt;
+  &lt;div class="container cards-2"&gt;
+    &lt;article class="panel"&gt;
+      &lt;h3&gt;Title&lt;/h3&gt;
+      &lt;p&gt;Description&lt;/p&gt;
+      &lt;a class="btn" href="#"&gt;Primary action&lt;/a&gt;
+    &lt;/article&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+            </div>
+            <div class="doc-note">
+              <strong>Developer rule:</strong>
+              <p>If a new page needs a button, form row, panel, or grid, first search <code>styles.css</code> for an existing class. Matching the current visual language is better than adding one more near-duplicate selector.</p>
+            </div>
+          </section>
+
+          <section id="doc-javascript" class="doc-section panel" data-doc-section data-doc-title="JavaScript Guide" data-doc-keywords="javascript js functions main.js behavior theme weather pets docs shortcuts chat local storage">
+            <div class="doc-heading">
+              <p class="eyebrow">JavaScript</p>
+              <h2>Shared script responsibilities and function-level guidance</h2>
+            </div>
+            <p><code>main.js</code> is the shared runtime. Add new code by feature, not as random global helpers.</p>
+            <div class="doc-flow" aria-label="JavaScript responsibility flow">
+              <article class="doc-flow-card">
+                <strong>Boot</strong>
+                <span>Initialize global UI and page hooks</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>Feature setup</strong>
+                <span>Theme, weather, pets, docs, chat</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>State</strong>
+                <span>Read and write browser storage</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>UI update</strong>
+                <span>Reflect state back into the DOM</span>
+              </article>
+            </div>
+            <div class="doc-table">
+              <article class="doc-row">
+                <strong>Boot and page setup</strong>
+                <span>Initializes common UI behavior, page-specific features, keyboard shortcuts, and theme state after the DOM is ready.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Theme functions</strong>
+                <span>Resolve <code>light</code>, <code>dark</code>, or <code>system</code>, update root data attributes, and persist the user preference in <code>staff_theme</code>.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Weather functions</strong>
+                <span>Request geolocation when allowed, fall back to Yangon, call Open-Meteo, then map weather code plus temperature into icon and color states for the nav widget.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Pet functions</strong>
+                <span>Load JSON reminder scripts, evaluate conditions such as long sitting or cold weather, display bubble text, and keep animations lightweight.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Layout manager functions</strong>
+                <span>Attach hide and drag controls to page sections, manage restore/reset behavior, and persist per-page layouts in <code>staff_layout_[page]</code>.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Docs page functions</strong>
+                <span>Handle left-topic activation and client-side search filtering for documentation sections.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Chat/demo functions</strong>
+                <span>Support the home and dedicated AI chat UI plus the Atom Voice local room demo and visual easter-egg commands.</span>
+              </article>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>How to add a new function</h3>
+                <ul class="doc-list">
+                  <li>Keep it scoped to one feature domain if possible.</li>
+                  <li>Use explicit names that describe the side effect, not vague helpers.</li>
+                  <li>Prefer reading page context from <code>data-page</code> or feature selectors rather than guessing from the URL text.</li>
+                  <li>Persist only the minimum browser state needed for the feature.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>How to refactor later</h3>
+                <ul class="doc-list">
+                  <li>Split global infrastructure from feature modules first.</li>
+                  <li>Move weather, pets, docs, AI, and layout management into separate files or modules.</li>
+                  <li>Create one stable storage utility so keys and reset behavior stay centralized.</li>
+                </ul>
+              </article>
+            </div>
+            <div class="doc-code">
+<pre><code>function setupFeature() {
+  const page = document.body.dataset.page;
+  if (page !== "settings") return;
+
+  const toggle = document.querySelector("[data-setting-toggle]");
+  if (!toggle) return;
+
+  toggle.addEventListener("click", handleToggle);
+}</code></pre>
+            </div>
+          </section>
+
+          <section id="doc-css" class="doc-section panel" data-doc-section data-doc-title="CSS Guide" data-doc-keywords="css styles stylesheet classes variables themes responsive breakpoints panels buttons form styles">
+            <div class="doc-heading">
+              <p class="eyebrow">CSS</p>
+              <h2>How the stylesheet is organized and how to extend it safely</h2>
+            </div>
+            <p><code>styles.css</code> is both the design system and page stylesheet. Add styles near the related feature block, not at random.</p>
+            <div class="doc-flow" aria-label="Stylesheet structure">
+              <article class="doc-flow-card">
+                <strong>Tokens</strong>
+                <span>Theme colors and shared variables</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>Base UI</strong>
+                <span>Typography, body, shared elements</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>Components</strong>
+                <span>Header, footer, cards, buttons</span>
+              </article>
+              <article class="doc-flow-card">
+                <strong>Feature blocks</strong>
+                <span>AI, pets, weather, docs, settings</span>
+              </article>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Core CSS layers</h3>
+                <ul class="doc-list">
+                  <li>Theme variables and root-level color tokens.</li>
+                  <li>Base typography, body background, and generic element rules.</li>
+                  <li>Shared components such as header, footer, cards, chips, and buttons.</li>
+                  <li>Feature/page modules such as AI, weather, pets, Atom Voice, settings, and documentation.</li>
+                  <li>Responsive breakpoints for tablet and phone adaptation.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Safe extension rules</h3>
+                <ul class="doc-list">
+                  <li>Add new selectors near the closest existing feature block instead of scattering them randomly.</li>
+                  <li>Prefer class selectors over element-heavy chains to keep overrides predictable.</li>
+                  <li>Use CSS variables for color and surface changes when the value may need dark-mode support later.</li>
+                  <li>Avoid universal transitions and expensive blur-heavy effects during scroll.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Responsive expectations</h3>
+                <ul class="doc-list">
+                  <li>New components should be checked at desktop, tablet, and narrow mobile widths.</li>
+                  <li>Fixed widgets such as pets, weather popovers, and action bubbles must not overlap critical content on small screens.</li>
+                  <li>If a layout needs equal-height panels, keep the content scrollable inside the panel rather than forcing the entire row taller.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Animation rules</h3>
+                <ul class="doc-list">
+                  <li>Prefer transform and opacity animations.</li>
+                  <li>Keep decorative motion subtle and never tie broad UI invalidation to scroll state.</li>
+                  <li>Respect <code>prefers-reduced-motion</code> for pets and non-essential animated effects.</li>
+                </ul>
+              </article>
+            </div>
+            <div class="doc-code">
+<pre><code>.new-widget {
+  border-radius: 18px;
+  background: var(--panel-bg);
+  color: var(--ink-800);
+}
+
+[data-theme="dark"] .new-widget {
+  border-color: rgba(126, 178, 255, 0.16);
+}</code></pre>
+            </div>
+          </section>
+
           <section id="doc-backend" class="doc-section panel" data-doc-section data-doc-title="Backend Migration" data-doc-keywords="backend api database auth dynamic website websocket notifications services queue atom voice ai deployment cms audit">
             <div class="doc-heading">
               <p class="eyebrow">Dynamic Future</p>
@@ -338,6 +617,74 @@
             <div class="doc-note">
               <strong>Recommended order:</strong>
               <p>Identity, services/queue APIs, and notifications should come first. Real-time Atom Voice, admin-managed content, and AI chat can follow after access control and data ownership are stable.</p>
+            </div>
+          </section>
+
+          <section id="doc-roadmap" class="doc-section panel" data-doc-section data-doc-title="Dynamic Roadmap" data-doc-keywords="roadmap phase 1 phase 2 phase 3 dynamic migration main features delivery backend plan">
+            <div class="doc-heading">
+              <p class="eyebrow">Roadmap</p>
+              <h2>Phase-by-phase plan to move from static to dynamic</h2>
+            </div>
+            <p>Do not rebuild everything at once. Replace local-only behavior in phases.</p>
+            <div class="doc-phase-grid" aria-label="Dynamic website roadmap">
+              <article class="doc-phase-card is-priority">
+                <span class="doc-phase-tag">Phase 1</span>
+                <h3>Main feature delivery</h3>
+                <p>Make the portal truly usable with real identity, queue data, services, notifications, settings, and content APIs.</p>
+              </article>
+              <article class="doc-phase-card">
+                <span class="doc-phase-tag">Phase 2</span>
+                <h3>Collaboration and content</h3>
+                <p>Add real Atom Voice, content management, support metrics, and role-based visibility.</p>
+              </article>
+              <article class="doc-phase-card">
+                <span class="doc-phase-tag">Phase 3</span>
+                <h3>Intelligence and optimization</h3>
+                <p>Add secured AI, analytics, moderation tooling, feature flags, and richer personalization.</p>
+              </article>
+            </div>
+            <div class="doc-grid-2">
+              <article class="doc-card">
+                <h3>Phase 1 detailed must-haves</h3>
+                <ul class="doc-list">
+                  <li>Company login and session lifecycle.</li>
+                  <li>User profile API with role and permission data.</li>
+                  <li>Real queue/task counts for the workspace.</li>
+                  <li>Service catalog and request form submission APIs.</li>
+                  <li>Notification retrieval plus read state.</li>
+                  <li>Persistent settings sync across devices.</li>
+                  <li>Basic content service for homepage summaries and important portal copy.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Why Phase 1 comes first</h3>
+                <ul class="doc-list">
+                  <li>These features affect daily utility, trust, and repeat use.</li>
+                  <li>Without identity and real data, the portal stays mostly decorative.</li>
+                  <li>Later AI or chat improvements are weaker if the core operational data is still fake or local-only.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Suggested backend deliverables</h3>
+                <ul class="doc-list">
+                  <li>API gateway or app server with authenticated endpoints.</li>
+                  <li>Relational database for users, requests, notifications, preferences, and content.</li>
+                  <li>Role model and audit logging from the beginning.</li>
+                  <li>Staging environment with seeded test data and monitoring.</li>
+                </ul>
+              </article>
+              <article class="doc-card">
+                <h3>Frontend migration approach</h3>
+                <ul class="doc-list">
+                  <li>Replace localStorage reads feature by feature, not all at once.</li>
+                  <li>Keep the current UI contracts stable while wiring real APIs behind them.</li>
+                  <li>Document each API payload before implementation so future pages can reuse the same data model.</li>
+                </ul>
+              </article>
+            </div>
+            <div class="doc-note">
+              <strong>How to execute the roadmap:</strong>
+              <p>Start with auth and real data contracts, keep the current UI stable, then replace browser-local placeholders feature by feature instead of shipping a disruptive redesign.</p>
             </div>
           </section>
 
@@ -487,7 +834,6 @@
       <p>ATOM Workspace</p>
       <nav class="footer-links" aria-label="Footer">
         <a href="faq.html">FAQ</a>
-        <a href="technical.html">Documentation</a>
         <a href="version.html">Version</a>
         <a href="legal.html">Legal</a>
         <a href="privacy.html">Privacy</a>
