@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATOM | Privacy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="privacy">
+  <header class="topbar" id="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="ATOM home">
+        <img class="brand-logo" src="assets/logo.png" alt="ATOM" />
+      </a>
+      <div class="nav-actions">
+        <nav class="nav-links" aria-label="Main">
+          <a data-link="home" href="index.html">Welcome</a>
+          <a data-link="services" href="services.html">Services</a>
+          <a data-link="workspace" href="workspace.html">Workspace</a>
+          <a data-link="apps" href="apps.html">Apps</a>
+          <a data-link="support" href="support.html">Support</a>
+        </nav>
+        <div class="nav-right" aria-label="Account">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17H9m9-1v-4a6 6 0 1 0-12 0v4l-2 2h16l-2-2z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+            <span class="icon-badge" aria-hidden="true"></span>
+          </button>
+          <button class="profile-chip" type="button" aria-label="Profile">
+            <span class="profile-avatar">AM</span>
+            <span class="profile-name">Aye Min</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner hero-grid" data-reveal>
+        <div>
+          <p class="eyebrow">Privacy</p>
+          <h1>What this site stores.</h1>
+          <p class="lead">A plain-language summary of the limited data behavior in this static site.</p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="legal.html">View Legal</a>
+            <a class="btn btn-ghost" href="support.html">Contact Support</a>
+          </div>
+        </div>
+        <div class="hero-visual" data-reveal>
+          <img src="assets/hero-support.svg" alt="Privacy and data handling illustration" />
+          <span class="float-chip top">Minimal Storage</span>
+          <span class="float-chip bottom">No Account Backend</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-priority" data-reveal>
+      <div class="container media-grid">
+        <article class="panel">
+          <h2>Data collected</h2>
+          <p class="section-note">This static site does not include a database, user account system, or form submission backend.</p>
+          <ul class="doc-list">
+            <li>No profile information is submitted from this site to a server controlled by this repo.</li>
+            <li>No payment, HR record, or ticket record is stored by this public static site itself.</li>
+            <li>Displayed names, counts, and ticket details are demo-style interface content.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h2>Browser storage</h2>
+          <p class="section-note">The site stores a small theme preference in your browser.</p>
+          <ul class="doc-list">
+            <li>The light or dark mode choice is saved in local storage so the same theme loads on the next visit.</li>
+            <li>If browser storage is blocked, the site still works but the theme preference may not persist.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-standard" data-reveal>
+      <div class="container media-grid">
+        <article class="panel">
+          <h2>External destinations</h2>
+          <p class="section-note">Some app links open external services.</p>
+          <ul class="doc-list">
+            <li>When you open Google, Atlassian, or similar external destinations, those providers may collect data under their own policies.</li>
+            <li>You should review third-party privacy notices separately if those services are used.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h2>Updates</h2>
+          <p class="section-note">This page describes the current static implementation of the site.</p>
+          <ul class="doc-list">
+            <li>If tracking, analytics, forms, or authentication are added later, this privacy page should be updated to match.</li>
+            <li>The Version page records visible site changes so users can see when documentation or features were expanded.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>ATOM Workspace</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="faq.html">FAQ</a>
+        <a href="version.html">Version</a>
+        <a href="legal.html">Legal</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

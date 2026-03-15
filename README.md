@@ -1,14 +1,19 @@
 # Staff APP
 
-Static staff portal site published with GitHub Pages.
+Static ATOM staff portal prototype built with plain HTML, CSS, and JavaScript.
 
-## Publish
-
-1. Push this repo to GitHub.
-2. Open `Settings > Pages`.
-3. In `Build and deployment`, set `Source` to `GitHub Actions`.
-4. Push to `master` or `main`, or run the `Deploy Static Site to GitHub Pages` workflow manually.
-
-Your site URL will be:
+Live site:
 
 `https://shwetalu1313.github.io/Staff_APP/`
+
+Included pages:
+
+- Welcome
+- Services
+- Workspace
+- Apps
+- Support
+- FAQ
+- Version
+- Legal
+- Privacy
