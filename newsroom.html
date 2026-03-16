@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATOM | Newsroom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="newsroom">
+  <header class="topbar" id="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="ATOM home">
+        <img class="brand-logo" src="assets/logo.png" alt="ATOM" />
+      </a>
+      <div class="nav-actions">
+        <nav class="nav-links" aria-label="Main">
+          <a data-link="home" href="index.html">Home</a>
+          <a data-link="workspace" href="workspace.html">Workspace</a>
+          <a data-link="services" href="services.html">Services</a>
+          <a data-link="documentation" href="technical.html">Documentation</a>
+        </nav>
+        <div class="nav-right" aria-label="Account">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17H9m9-1v-4a6 6 0 1 0-12 0v4l-2 2h16l-2-2z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+            <span class="icon-badge" aria-hidden="true"></span>
+          </button>
+          <button class="profile-chip" type="button" aria-label="Profile">
+            <span class="profile-avatar">AM</span>
+            <span class="profile-name">Aye Min</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section section-standard" data-reveal>
+      <div class="container">
+        <div class="hero hero-compact">
+          <div>
+            <p class="eyebrow">Newsroom</p>
+            <h1>Company updates in one place</h1>
+            <p class="section-note">More detail for the latest internal news highlighted on the Home page.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-standard" data-reveal>
+      <div class="container newsroom-grid">
+        <article class="panel newsroom-article" id="news-5g-upgrade">
+          <p class="eyebrow">Infrastructure</p>
+          <h2>5G core upgrade completed</h2>
+          <p>Mandalay region is now operating on the new core stack, giving the network team a more stable base for capacity expansion, faster fault isolation, and cleaner service migration planning.</p>
+          <p>The rollout also reduces operational overlap with older configurations and prepares the region for the next phase of service optimization work across priority sites.</p>
+        </article>
+
+        <article class="panel newsroom-article" id="news-customer-growth">
+          <p class="eyebrow">Growth</p>
+          <h2>Q2 customer growth report</h2>
+          <p>Enterprise subscriptions increased by 11% this quarter, led by stronger uptake from mid-market accounts and better conversion from bundled service offers.</p>
+          <p>Commercial and support teams are using the result as an input for next-quarter retention planning, onboarding improvements, and service-priority alignment.</p>
+        </article>
+
+        <article class="panel newsroom-article" id="news-onboarding">
+          <p class="eyebrow">Operations</p>
+          <h2>Digital onboarding rollout</h2>
+          <p>All branches have now moved to paperless onboarding, reducing manual document handling and making status visibility easier for frontline teams and back-office reviewers.</p>
+          <p>The next focus is process tuning: shorten the longest approval steps, improve handoff tracking, and standardize branch feedback into one implementation loop.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>ATOM Workspace</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="faq.html">FAQ</a>
+        <a href="version.html">Version</a>
+        <a href="legal.html">Legal</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

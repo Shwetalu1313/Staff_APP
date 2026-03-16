@@ -1477,6 +1477,32 @@ h2 {
   font-size: var(--text-sm);
 }
 
+.pulse-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.42rem;
+  color: var(--accent-1);
+  font-size: var(--text-sm);
+  font-weight: 800;
+}
+
+.pulse-link:hover {
+  text-decoration: underline;
+}
+
+.newsroom-grid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.newsroom-article {
+  padding: 1.1rem;
+}
+
+.newsroom-article h2 {
+  margin-top: 0.2rem;
+}
+
 .media-card {
   border-radius: var(--radius-lg);
   overflow: hidden;
