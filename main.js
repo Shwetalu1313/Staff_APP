@@ -1467,9 +1467,9 @@ if (navRight && bellButton && profileButton) {
   navRight.insertBefore(appsButton, themeButton);
 
   const appCatalog = [
-    { label: "MyBoard", short: "MB", href: "https://www.myboard.aml.mobi", desc: "Boards and projects", external: true },
-    { label: "MyTicket", short: "TK", href: "https://www.myticket.aml.mobi", desc: "Issue tracking", external: true },
-    { label: "MySpace", short: "MS", href: "https://www.myspace.aml.mobi", desc: "Notes and docs", external: true },
+    { label: "MyBoard", short: "MB", href: "https://myboard.aml.mobi", desc: "Boards and projects", external: true },
+    { label: "MyTicket", short: "TK", href: "https://myticket.aml.mobi", desc: "Issue tracking", external: true },
+    { label: "MySpace", short: "MS", href: "https://myspace.aml.mobi", desc: "Notes and docs", external: true },
     { label: "Performance", short: "PM", href: "https://pmp.aml.mobi", desc: "Goals and reviews", external: true },
     { label: "Workspace", short: "WS", href: "workspace.html", desc: "Tasks" },
     { label: "Services", short: "SV", href: "services.html", desc: "Requests" },
