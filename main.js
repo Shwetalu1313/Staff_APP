@@ -30,12 +30,14 @@ if (topbar) {
 }
 
 const pageName = document.body.dataset.page;
+const navContainer = document.querySelector(".nav-links");
 const navLinks = document.querySelectorAll("[data-link]");
 const activeNavKeyByPage = {
   technical: "documentation"
 };
 const themeStorageKey = "staff_theme";
 const settingsStorageKey = "staff_settings";
+const navStorageKey = "staff_nav_order";
 const themeModes = ["light", "dark", "system"];
 const pageShortcuts = {
   h: "index.html",
@@ -51,7 +53,7 @@ const pageShortcuts = {
 const root = document.documentElement;
 const brand = document.querySelector(".brand");
 const portalStoragePrefixes = ["staff_layout_"];
-const portalStorageKeys = [themeStorageKey, settingsStorageKey, "public_room_messages"];
+const portalStorageKeys = [themeStorageKey, settingsStorageKey, navStorageKey, "public_room_messages"];
 const systemThemeMedia =
   typeof window.matchMedia === "function"
     ? window.matchMedia("(prefers-color-scheme: dark)")
@@ -163,6 +165,69 @@ function setStoredSettings(settings) {
   } catch (_error) {
     // Ignore storage write failures (private mode / blocked storage).
   }
+}
+
+function getStoredNavOrder() {
+  try {
+    const stored = window.localStorage.getItem(navStorageKey);
+    if (!stored) {
+      return null;
+    }
+
+    const parsed = JSON.parse(stored);
+    if (Array.isArray(parsed)) {
+      return parsed.filter((item) => typeof item === "string" && item);
+    }
+  } catch (_error) {
+    return null;
+  }
+
+  return null;
+}
+
+function setStoredNavOrder(order) {
+  try {
+    window.localStorage.setItem(navStorageKey, JSON.stringify(order));
+  } catch (_error) {
+    // Ignore nav write failures.
+  }
+}
+
+function clearStoredNavOrder() {
+  try {
+    window.localStorage.removeItem(navStorageKey);
+  } catch (_error) {
+    // Ignore nav clear failures.
+  }
+}
+
+function getCurrentNavLinks() {
+  if (!navContainer) {
+    return [];
+  }
+
+  return [...navContainer.querySelectorAll("[data-link]")];
+}
+
+function getCurrentNavOrder() {
+  return getCurrentNavLinks().map((link) => link.dataset.link).filter(Boolean);
+}
+
+function applyNavOrder(order) {
+  if (!navContainer || !Array.isArray(order) || !order.length) {
+    return;
+  }
+
+  const linkMap = new Map(
+    getCurrentNavLinks().map((link) => [link.dataset.link, link])
+  );
+
+  order.forEach((linkKey) => {
+    const link = linkMap.get(linkKey);
+    if (link) {
+      navContainer.appendChild(link);
+    }
+  });
 }
 
 function slugifyText(value) {
@@ -283,6 +348,103 @@ function layoutResetIconSvg() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>';
 }
 
+function setupNavCustomization() {
+  if (!navContainer) {
+    return { reset: () => {} };
+  }
+
+  const initialNavOrder = getCurrentNavOrder();
+  const storedNavOrder = getStoredNavOrder();
+  if (storedNavOrder?.length) {
+    applyNavOrder(storedNavOrder);
+  }
+
+  let draggedLinkKey = "";
+
+  getCurrentNavLinks().forEach((link) => {
+    const linkKey = link.dataset.link;
+    if (!linkKey) {
+      return;
+    }
+
+    link.draggable = true;
+    link.title = `${link.textContent.trim()} - drag to reorder`;
+
+    link.addEventListener("dragstart", (event) => {
+      draggedLinkKey = linkKey;
+      link.classList.add("is-nav-dragging");
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", linkKey);
+      }
+    });
+
+    link.addEventListener("dragend", () => {
+      draggedLinkKey = "";
+      getCurrentNavLinks().forEach((item) => {
+        item.classList.remove("is-nav-dragging", "is-nav-drop-target");
+      });
+
+      const nextOrder = getCurrentNavOrder();
+      const shouldPersist =
+        initialNavOrder.length === nextOrder.length &&
+        initialNavOrder.some((item, index) => item !== nextOrder[index]);
+
+      if (shouldPersist) {
+        setStoredNavOrder(nextOrder);
+      } else {
+        clearStoredNavOrder();
+      }
+    });
+
+    link.addEventListener("dragover", (event) => {
+      if (!draggedLinkKey || draggedLinkKey === linkKey) {
+        return;
+      }
+
+      event.preventDefault();
+      const draggedLink = navContainer.querySelector(`[data-link="${draggedLinkKey}"]`);
+      if (!draggedLink) {
+        return;
+      }
+
+      const rect = link.getBoundingClientRect();
+      const insertAfter = event.clientX > rect.left + rect.width / 2;
+      link.classList.add("is-nav-drop-target");
+
+      if (insertAfter) {
+        navContainer.insertBefore(draggedLink, link.nextSibling);
+      } else {
+        navContainer.insertBefore(draggedLink, link);
+      }
+    });
+
+    link.addEventListener("dragleave", () => {
+      link.classList.remove("is-nav-drop-target");
+    });
+
+    link.addEventListener("drop", (event) => {
+      if (!draggedLinkKey) {
+        return;
+      }
+
+      event.preventDefault();
+      link.classList.remove("is-nav-drop-target");
+    });
+  });
+
+  return {
+    reset() {
+      if (!initialNavOrder.length) {
+        return;
+      }
+
+      applyNavOrder(initialNavOrder);
+      clearStoredNavOrder();
+    }
+  };
+}
+
 function layoutAssistantPetSvg() {
   return `
     <svg class="layout-assistant-pet-svg" viewBox="0 0 96 96" aria-hidden="true">
@@ -335,6 +497,7 @@ function setupPageLayoutManager() {
   });
 
   const initialOrder = sections.map((section) => section.dataset.layoutId);
+  const navCustomization = setupNavCustomization();
   const initialTopicOrder = pageName === "technical"
     ? [...document.querySelectorAll("[data-doc-topic]")].map((button) => button.dataset.docTopic)
     : [];
@@ -364,8 +527,16 @@ function setupPageLayoutManager() {
         <strong>Customize This Page</strong>
         <span>Hide sections or drag them into the order you prefer.</span>
       </div>
+      <div class="layout-nav-note">
+        <strong>Navigation order</strong>
+        <span>Drag the top nav links to reorder them for this browser.</span>
+      </div>
       <div class="layout-manager-actions">
         <div class="layout-hidden-list" data-layout-hidden-list></div>
+        <button class="layout-reset-btn" type="button" data-nav-reset>
+          ${layoutResetIconSvg()}
+          <span>Reset Nav</span>
+        </button>
         <button class="layout-reset-btn" type="button" data-layout-reset>
           ${layoutResetIconSvg()}
           <span>Reset Layout</span>
@@ -377,6 +548,7 @@ function setupPageLayoutManager() {
 
   const hiddenList = manager.querySelector("[data-layout-hidden-list]");
   const resetButton = manager.querySelector("[data-layout-reset]");
+  const navResetButton = manager.querySelector("[data-nav-reset]");
   const toggleButton = manager.querySelector("[data-layout-toggle]");
   const panel = manager.querySelector("[data-layout-panel]");
   const badge = manager.querySelector("[data-layout-badge]");
@@ -598,6 +770,12 @@ function setupPageLayoutManager() {
 
   if (resetButton) {
     resetButton.addEventListener("click", resetLayout);
+  }
+
+  if (navResetButton) {
+    navResetButton.addEventListener("click", () => {
+      navCustomization.reset();
+    });
   }
 
   if (toggleButton && panel) {

@@ -90,7 +90,7 @@
                 <span>Theme modes</span>
               </article>
               <article class="doc-stat">
-                <strong>5</strong>
+                <strong>4</strong>
                 <span>Footer links</span>
               </article>
             </div>
@@ -197,7 +197,6 @@
                 <h3>Footer links</h3>
                 <ul class="doc-list">
                   <li>FAQ</li>
-                  <li>Documentation</li>
                   <li>Version</li>
                   <li>Legal</li>
                   <li>Privacy</li>
@@ -206,7 +205,7 @@
             </div>
             <div class="doc-note">
               <strong>Design note:</strong>
-              <p>The separate Support nav route was removed to reduce duplication. Help-desk behavior now lives inside the Services page under the support desk section, and each page section can now be hidden or reordered by the user.</p>
+              <p>The separate Support nav route was removed to reduce duplication. Help-desk behavior now lives inside the Services page under the support desk section, and users can now drag the shared top-nav links into their preferred order for this browser.</p>
             </div>
           </section>
 
@@ -241,8 +240,8 @@
                 <p>Clickable switches for user-facing preferences. Current behavior is browser-local and intended as a frontend foundation.</p>
               </article>
               <article class="doc-card">
-                <h3>Section layout controls</h3>
-                <p>Each page section now has per-section controls for hiding and drag-and-drop sorting, plus a floating assistant pet that opens the restore/reset panel and persists layout choices per page.</p>
+                <h3>Section and nav controls</h3>
+                <p>Each page section has per-section controls for hiding and drag sorting, and the top navigation links can also be drag-reordered. Tom opens the restore/reset panel for layout and nav customization.</p>
               </article>
             </div>
           </section>
@@ -264,6 +263,10 @@
               <article class="doc-row">
                 <strong><code>staff_layout_[page]</code></strong>
                 <span>Stores per-page hidden sections and drag-sorted order so each page layout can be personalized in the current browser.</span>
+              </article>
+              <article class="doc-row">
+                <strong><code>staff_nav_order</code></strong>
+                <span>Stores the user-defined top navigation order for the current browser.</span>
               </article>
               <article class="doc-row">
                 <strong><code>public_room_messages</code></strong>
@@ -424,6 +427,10 @@
               <article class="doc-row">
                 <strong>Layout manager functions</strong>
                 <span>Attach hide and drag controls to page sections, manage restore/reset behavior, and persist per-page layouts in <code>staff_layout_[page]</code>.</span>
+              </article>
+              <article class="doc-row">
+                <strong>Navigation customization</strong>
+                <span>Lets users drag the shared top-nav links into a custom order and stores that preference in <code>staff_nav_order</code>.</span>
               </article>
               <article class="doc-row">
                 <strong>Docs page functions</strong>
